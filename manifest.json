@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "ReqRev - GitHub Requirements Tab",
+  "version": "1.0.0",
+  "description": "Adds a Requirements tab to GitHub repositories for managing project requirements",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://github.com/*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*/*"],
+      "js": ["contentScript.js"],
+      "css": ["reqrev.css"],
+      "run_at": "document_end"
+    }
+  ]
+}

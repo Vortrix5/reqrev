@@ -1,0 +1,455 @@
+/**
+ * ReqRev Styles
+ * 
+ * GitHub dark mode aesthetic with ReqRev design language
+ * Colors based on reqpres.html:
+ * - Background: #0d1117
+ * - Text: #f2f5ff
+ * - Accent: #7aa2ff (blue) and #64e1ab (green)
+ */
+
+/* Panel Container - Hidden/Visible States */
+#reqrev-panel-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.reqrev-panel-hidden {
+  display: none !important;
+}
+
+.reqrev-panel-visible {
+  display: block !important;
+}
+
+/* Main Panel */
+.reqrev-panel {
+  background: #0d1117;
+  width: 100%;
+  min-height: calc(100vh - 200px);
+  padding: 0;
+  margin: 0;
+}
+
+.reqrev-panel-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* Header */
+.reqrev-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #30363d;
+}
+
+.reqrev-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reqrev-header-right {
+  display: flex;
+  gap: 8px;
+}
+
+.reqrev-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #f2f5ff;
+}
+
+.reqrev-icon {
+  color: #7aa2ff;
+}
+
+.reqrev-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: #21262d;
+  color: #8b949e;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Loading State */
+.reqrev-loading {
+  padding: 48px;
+  text-align: center;
+  color: #8b949e;
+  font-size: 16px;
+}
+
+/* Empty State */
+.reqrev-empty-state {
+  padding: 48px;
+  text-align: center;
+}
+
+.reqrev-empty-state p {
+  color: #8b949e;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Buttons */
+.reqrev-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reqrev-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.reqrev-btn-primary {
+  background: #297AEF;
+  color: #ffffff;
+  border-color: #297AEF;
+}
+
+.reqrev-btn-primary:hover {
+  background: #1f6feb;
+  border-color: #1f6feb;
+}
+
+.reqrev-btn-secondary {
+  background: transparent;
+  color: #f2f5ff;
+  border-color: #30363d;
+}
+
+.reqrev-btn-secondary:hover {
+  background: #21262d;
+  border-color: #8b949e;
+}
+
+.reqrev-btn-success {
+  background: #64e1ab;
+  color: #0d1117;
+  border-color: #64e1ab;
+}
+
+.reqrev-btn-success:hover {
+  background: #52d199;
+  border-color: #52d199;
+}
+
+.reqrev-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #8b949e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reqrev-btn-icon:hover {
+  background: #21262d;
+  border-color: #8b949e;
+  color: #f2f5ff;
+}
+
+.reqrev-btn-edit:hover {
+  color: #7aa2ff;
+  border-color: #7aa2ff;
+}
+
+.reqrev-btn-delete:hover {
+  color: #f85149;
+  border-color: #f85149;
+}
+
+/* Table Container */
+.reqrev-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+
+/* Table */
+.reqrev-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0d1117;
+  font-size: 14px;
+}
+
+/* Table Header */
+.reqrev-table thead {
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+}
+
+.reqrev-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #8b949e;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #30363d;
+}
+
+.reqrev-th-id {
+  width: 100px;
+}
+
+.reqrev-th-title {
+  width: 25%;
+  min-width: 200px;
+}
+
+.reqrev-th-description {
+  width: auto;
+}
+
+.reqrev-th-actions {
+  width: 100px;
+  text-align: center;
+}
+
+/* Table Body */
+.reqrev-table tbody tr {
+  border-bottom: 1px solid #21262d;
+  transition: background-color 0.15s ease;
+}
+
+.reqrev-table tbody tr:hover {
+  background: #161b22;
+}
+
+.reqrev-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.reqrev-table td {
+  padding: 16px;
+  vertical-align: top;
+  color: #c9d1d9;
+}
+
+/* Table Cell Content */
+.reqrev-td-id {
+  vertical-align: middle;
+}
+
+.reqrev-requirement-id {
+  display: inline-flex;
+  padding: 4px 10px;
+  background: #21262d;
+  color: #7aa2ff;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+}
+
+.reqrev-td-title {
+  vertical-align: middle;
+}
+
+.reqrev-requirement-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f2f5ff;
+  line-height: 1.4;
+}
+
+.reqrev-td-description {
+  line-height: 1.6;
+}
+
+.reqrev-requirement-description {
+  font-size: 14px;
+  color: #c9d1d9;
+  line-height: 1.6;
+  display: block;
+}
+
+.reqrev-td-actions {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.reqrev-requirement-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* Edit Form Container */
+.reqrev-edit-form-container {
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 24px;
+  background: #161b22;
+}
+
+/* Edit Form */
+.reqrev-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reqrev-form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.reqrev-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.reqrev-form-group-full {
+  flex: 1 1 100%;
+}
+
+.reqrev-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f2f5ff;
+}
+
+.reqrev-id-display {
+  display: inline-flex;
+  padding: 8px 12px;
+  background: #21262d;
+  color: #7aa2ff;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  width: fit-content;
+}
+
+.reqrev-input {
+  padding: 10px 12px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #f2f5ff;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  transition: all 0.2s ease;
+}
+
+.reqrev-input:focus {
+  outline: none;
+  border-color: #7aa2ff;
+  box-shadow: 0 0 0 3px rgba(122, 162, 255, 0.15);
+}
+
+.reqrev-textarea {
+  padding: 10px 12px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #f2f5ff;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+.reqrev-textarea:focus {
+  outline: none;
+  border-color: #7aa2ff;
+  box-shadow: 0 0 0 3px rgba(122, 162, 255, 0.15);
+}
+
+.reqrev-form-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #30363d;
+  margin-top: 8px;
+}
+
+/* Tab Counter (in GitHub navbar) */
+#reqrev-count {
+  margin-left: 6px;
+  background: #21262d;
+  color: #8b949e;
+}
+
+/* Selected tab state */
+.UnderlineNav-item.selected #reqrev-count {
+  background: #7aa2ff;
+  color: #0d1117;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .reqrev-panel {
+    margin: 16px;
+    border-radius: 8px;
+  }
+
+  .reqrev-panel-content {
+    padding: 16px;
+  }
+
+  .reqrev-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .reqrev-header-right {
+    width: 100%;
+  }
+
+  .reqrev-btn {
+    flex: 1;
+  }
+
+  .reqrev-requirement-card {
+    padding: 16px;
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+}
