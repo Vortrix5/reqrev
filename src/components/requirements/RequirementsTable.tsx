@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Requirement } from '../types';
+import { Requirement } from '../../types';
 import { RequirementRow } from './RequirementRow';
 
 interface RequirementsTableProps {

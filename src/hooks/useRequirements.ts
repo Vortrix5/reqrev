@@ -68,10 +68,10 @@ export const useRequirements = (repoId: string) => {
     /**
      * Add a new requirement
      */
-    const addRequirement = useCallback((): Requirement => {
+    const addRequirement = useCallback((description?: string): Requirement => {
         const newReq: Requirement = {
             id: getNextId(requirements),
-            description: 'Enter requirement description here...',
+            description: description || '',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };

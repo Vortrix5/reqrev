@@ -124,14 +124,14 @@
 }
 
 .reqrev-btn-primary {
-  background: #297AEF;
+  background: #1f6feb;
   color: #ffffff;
-  border-color: #297AEF;
+  border-color: #1f6feb;
 }
 
 .reqrev-btn-primary:hover {
-  background: #1f6feb;
-  border-color: #1f6feb;
+  background: #3094FF;
+  border-color: #3094FF;
 }
 
 .reqrev-btn-secondary {
@@ -146,14 +146,14 @@
 }
 
 .reqrev-btn-success {
-  background: #64e1ab;
-  color: #0d1117;
-  border-color: #64e1ab;
+  background: #1f6feb;
+  color: #ffffff;
+  border-color: #1f6feb;
 }
 
 .reqrev-btn-success:hover {
-  background: #52d199;
-  border-color: #52d199;
+  background: #3094FF;
+  border-color: #3094FF;
 }
 
 .reqrev-btn-icon {
@@ -325,14 +325,6 @@
   justify-content: center;
 }
 
-/* Edit Form Container */
-.reqrev-edit-form-container {
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 24px;
-  background: #161b22;
-}
-
 /* Edit Form */
 .reqrev-edit-form {
   display: flex;
@@ -460,6 +452,100 @@
   .reqrev-requirement-card {
     padding: 16px;
   }
+}
+
+/* Modal Overlay */
+.reqrev-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(1, 4, 9, 0.8);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+  animation: reqrev-modal-fade-in 0.2s ease;
+}
+
+@keyframes reqrev-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.reqrev-modal {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(1, 4, 9, 0.6);
+  animation: reqrev-modal-slide-up 0.2s ease;
+}
+
+@keyframes reqrev-modal-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header */
+.reqrev-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #30363d;
+}
+
+.reqrev-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #f2f5ff;
+}
+
+.reqrev-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #8b949e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reqrev-modal-close:hover {
+  background: #21262d;
+  color: #f2f5ff;
+}
+
+/* Modal Content */
+.reqrev-modal-content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Smooth transitions for all interactive elements */

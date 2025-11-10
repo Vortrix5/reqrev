@@ -5,17 +5,17 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import RequirementsPanel from '../components/RequirementsPanel';
-import { IDS, CSS_CLASSES, TIMING } from '../constants';
+import { RequirementsPanel } from '../components';
+import { CSS_CLASSES, IDS, TIMING } from '../constants';
 import {
+    getAllNavTabs,
+    getMainContent,
     getPanelContainer,
     getRequirementsTabLink,
-    getAllNavTabs,
+    hideGitHubContent,
     resetTabState,
     setTabSelected,
-    hideGitHubContent,
     showGitHubContent,
-    getMainContent,
 } from './githubDOM';
 
 export class PanelManager {
@@ -117,7 +117,7 @@ export class PanelManager {
      */
     private updateTabStates(isRequirementsActive: boolean): void {
         const reqrevTabLink = getRequirementsTabLink();
-        
+
         if (reqrevTabLink) {
             setTabSelected(reqrevTabLink, isRequirementsActive);
 
@@ -182,7 +182,7 @@ export class PanelManager {
 
         if (container && reqrevTabLink && container.classList.contains(CSS_CLASSES.PANEL_VISIBLE)) {
             const allTabs = getAllNavTabs();
-            
+
             if (allTabs) {
                 allTabs.forEach(tab => {
                     if (tab !== reqrevTabLink) {
@@ -245,7 +245,7 @@ export class PanelManager {
     private handleOtherTabActivation(target: HTMLElement): void {
         const reqrevTabLink = getRequirementsTabLink();
         const container = getPanelContainer();
-        
+
         if (reqrevTabLink &&
             container &&
             container.classList.contains(CSS_CLASSES.PANEL_VISIBLE) &&
