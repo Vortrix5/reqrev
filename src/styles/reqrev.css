@@ -224,13 +224,19 @@
   width: 100px;
 }
 
-.reqrev-th-title {
-  width: 25%;
-  min-width: 200px;
-}
-
 .reqrev-th-description {
   width: auto;
+  min-width: 300px;
+}
+
+.reqrev-th-activity {
+  width: 140px;
+  text-align: center;
+}
+
+.reqrev-th-flags {
+  width: 140px;
+  text-align: center;
 }
 
 .reqrev-th-actions {
@@ -275,17 +281,6 @@
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
 }
 
-.reqrev-td-title {
-  vertical-align: middle;
-}
-
-.reqrev-requirement-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #f2f5ff;
-  line-height: 1.4;
-}
-
 .reqrev-td-description {
   line-height: 1.6;
 }
@@ -295,6 +290,28 @@
   color: #c9d1d9;
   line-height: 1.6;
   display: block;
+}
+
+.reqrev-td-activity {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.reqrev-activity-placeholder {
+  font-size: 14px;
+  color: #6e7681;
+  font-weight: 500;
+}
+
+.reqrev-td-flags {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.reqrev-flags-placeholder {
+  font-size: 14px;
+  color: #6e7681;
+  font-weight: 500;
 }
 
 .reqrev-td-actions {
