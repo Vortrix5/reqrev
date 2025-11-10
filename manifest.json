@@ -5,10 +5,12 @@
   "description": "Adds a Requirements tab to GitHub repositories for managing project requirements",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "cookies"
   ],
   "host_permissions": [
-    "https://github.com/*/*"
+    "https://github.com/*/*",
+    "https://api.github.com/*"
   ],
   "content_scripts": [
     {

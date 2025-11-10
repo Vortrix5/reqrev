@@ -5,12 +5,13 @@
  * Injects a "Requirements" tab into GitHub repository pages.
  */
 
-import { isRepoPage, getRepoIdentifier } from './utils/githubNavigation';
-import { isExtensionContextValid } from './utils/extensionContext';
-import { injectTab, removeTab } from './utils/tabInjection';
-import { getNavBar } from './utils/githubDOM';
-import { PanelManager } from './utils/PanelManager';
 import { TIMING } from './constants';
+import { isExtensionContextValid } from './utils/extensionContext';
+import { getNavBar } from './utils/githubDOM';
+import { getRepoIdentifier, isRepoPage, parseRepoInfo } from './utils/githubNavigation';
+import { shouldShowRequirementsTab } from './utils/githubPermissions';
+import { PanelManager } from './utils/PanelManager';
+import { injectTab, removeTab } from './utils/tabInjection';
 
 // Global state
 let panelManager: PanelManager | null = null;
@@ -20,7 +21,7 @@ let lastRepoId = getRepoIdentifier();
 /**
  * Initialize the extension
  */
-const init = (): void => {
+const init = async (): Promise<void> => {
     console.log('[ReqRev] Initializing extension...');
 
     if (!isExtensionContextValid()) {
@@ -34,12 +35,24 @@ const init = (): void => {
     }
 
     const repoId = getRepoIdentifier();
+    const repoInfo = parseRepoInfo();
+
     console.log('[ReqRev] On repository page:', repoId);
 
-    if (!repoId) {
+    if (!repoId || !repoInfo) {
         console.error('[ReqRev] Could not determine repository identifier');
         return;
     }
+
+    // Check if user has permissions to see the Requirements tab
+    const hasPermissions = await shouldShowRequirementsTab(repoInfo.org, repoInfo.repo);
+
+    if (!hasPermissions) {
+        console.log('[ReqRev] User does not have write access to this repository, skipping tab injection');
+        return;
+    }
+
+    console.log('[ReqRev] User has required permissions, proceeding with tab injection');
 
     // Initialize panel manager
     panelManager = new PanelManager(repoId, () => {
@@ -112,7 +125,7 @@ const handleNavigation = (): void => {
 
                 // Re-initialize if still on a repo page
                 if (isRepoPage()) {
-                    setTimeout(() => init(), TIMING.NAVIGATION_REINIT_DELAY);
+                    setTimeout(async () => await init(), TIMING.NAVIGATION_REINIT_DELAY);
                 }
             }
         }
@@ -120,5 +133,7 @@ const handleNavigation = (): void => {
 };
 
 // Start the extension
-init();
-handleNavigation();
+(async () => {
+    await init();
+    handleNavigation();
+})();
