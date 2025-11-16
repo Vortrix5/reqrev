@@ -548,6 +548,480 @@
   flex: 1;
 }
 
+/* Smell Badges */
+.reqrev-smell-badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.reqrev-smell-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.reqrev-smell-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.reqrev-smell-more {
+  background: #6b7280 !important;
+  cursor: help;
+}
+
+.reqrev-no-smells {
+  color: #64e1ab;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.reqrev-analyzing {
+  color: #7aa2ff;
+  font-size: 12px;
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ===========================
+   SMELL COUNT BADGE (NEW)
+   =========================== */
+
+.reqrev-smell-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.reqrev-smell-count-badge.perfect {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+.reqrev-smell-count-badge.good {
+  background: rgba(234, 179, 8, 0.1) !important;
+  color: #eab308 !important;
+  border-color: #eab308 !important;
+}
+
+.reqrev-smell-count-badge.warning {
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #f59e0b !important;
+  border-color: #f59e0b !important;
+}
+
+.reqrev-smell-count-badge.critical {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+
+.reqrev-smell-count-badge.analyzing {
+  background: rgba(122, 162, 255, 0.1) !important;
+  color: #7aa2ff !important;
+  border-color: #7aa2ff !important;
+  font-style: italic;
+}
+
+.reqrev-smell-count-number {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.reqrev-smell-count-icon {
+  font-size: 14px;
+}
+
+.reqrev-smell-count-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reqrev-smell-count-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(122, 162, 255, 0.3);
+  border-top-color: #7aa2ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===========================
+   DETAILS BUTTON (NEW)
+   =========================== */
+
+.reqrev-btn-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background: #21262d;
+  color: #7aa2ff;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reqrev-btn-details:hover:not(:disabled) {
+  background: #30363d;
+  border-color: #7aa2ff;
+  box-shadow: 0 0 0 1px #7aa2ff;
+}
+
+.reqrev-btn-details:active:not(:disabled) {
+  background: #161b22;
+}
+
+.reqrev-btn-details:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reqrev-btn-details svg {
+  fill: currentColor;
+}
+
+/* ===========================
+   SMELL DETAILS PANEL (NEW)
+   =========================== */
+
+.reqrev-smell-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(1, 4, 9, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.reqrev-smell-panel {
+  width: 600px;
+  max-width: 90vw;
+  height: 100vh;
+  background: #0d1117;
+  border-left: 1px solid #30363d;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.reqrev-smell-panel-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px;
+  background: #0d1117;
+  border-bottom: 1px solid #30363d;
+  z-index: 10;
+}
+
+.reqrev-smell-panel-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #f2f5ff;
+}
+
+.reqrev-smell-panel-subtitle {
+  font-size: 13px;
+  color: #8b949e;
+}
+
+.reqrev-smell-panel-close {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  border-radius: 6px;
+}
+
+.reqrev-smell-panel-close:hover {
+  color: #f2f5ff;
+  background: #21262d;
+}
+
+.reqrev-smell-panel-section {
+  padding: 24px;
+  border-bottom: 1px solid #21262d;
+}
+
+.reqrev-smell-panel-section:last-child {
+  border-bottom: none;
+}
+
+.reqrev-smell-panel-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f2f5ff;
+}
+
+.reqrev-smell-panel-requirement {
+  padding: 16px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.reqrev-smell-panel-empty {
+  padding: 32px;
+  text-align: center;
+  color: #64e1ab;
+  font-size: 16px;
+  font-weight: 500;
+  background: rgba(100, 225, 171, 0.05);
+  border: 1px solid rgba(100, 225, 171, 0.2);
+  border-radius: 8px;
+}
+
+.reqrev-smell-panel-smells {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===========================
+   SMELL DETAIL CARD (NEW)
+   =========================== */
+
+.reqrev-smell-detail-card {
+  padding: 20px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.reqrev-smell-detail-card:hover {
+  border-color: #484f58;
+}
+
+.reqrev-smell-detail-header {
+  margin-bottom: 16px;
+}
+
+.reqrev-smell-detail-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reqrev-smell-detail-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reqrev-smell-detail-category {
+  font-size: 12px;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reqrev-smell-detail-section {
+  margin-bottom: 16px;
+}
+
+.reqrev-smell-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.reqrev-smell-detail-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f2f5ff;
+}
+
+.reqrev-smell-detail-section p {
+  margin: 0;
+  color: #c9d1d9;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.reqrev-smell-fix-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #c9d1d9;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.reqrev-smell-fix-list li {
+  margin-bottom: 6px;
+}
+
+.reqrev-smell-fix-list li:last-child {
+  margin-bottom: 0;
+}
+
+.reqrev-smell-example {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reqrev-smell-example-before,
+.reqrev-smell-example-after {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid;
+}
+
+.reqrev-smell-example-before {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.reqrev-smell-example-after {
+  background: rgba(100, 225, 171, 0.05);
+  border-color: rgba(100, 225, 171, 0.2);
+}
+
+.reqrev-smell-example-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.reqrev-smell-example-before .reqrev-smell-example-label {
+  color: #ef4444;
+}
+
+.reqrev-smell-example-after .reqrev-smell-example-label {
+  color: #64e1ab;
+}
+
+.reqrev-smell-example-text {
+  color: #c9d1d9;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
+}
+
+.reqrev-smell-panel-summary {
+  background: rgba(122, 162, 255, 0.05);
+  border: 1px solid rgba(122, 162, 255, 0.2);
+  border-radius: 8px;
+}
+
+.reqrev-smell-panel-summary ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #c9d1d9;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.reqrev-smell-panel-summary li {
+  margin-bottom: 8px;
+}
+
+/* ===========================
+   TABLE COLUMN UPDATES
+   =========================== */
+
+.reqrev-td-smells {
+  min-width: 150px;
+  text-align: center;
+}
+
+.reqrev-td-details {
+  min-width: 100px;
+  text-align: center;
+}
+
+.reqrev-th-smells {
+  text-align: center !important;
+}
+
+.reqrev-th-details {
+  text-align: center !important;
+}
+
+/* Remove old smell badge column styles */
+.reqrev-td-flags {
+  display: none;
+}
+
+.reqrev-th-flags {
+  display: none;
+}
+
 /* Smooth transitions for all interactive elements */
 * {
   box-sizing: border-box;

@@ -1,0 +1,20 @@
+# ReqRev API - Python Dependencies
+
+# FastAPI and server
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+
+# Configuration and environment
+pydantic==2.9.0
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+
+# HTTP client for external APIs
+httpx==0.27.0
+
+# LLM Provider (OpenAI only)
+openai==1.51.0
+
+# Utilities
+python-json-logger==2.0.7

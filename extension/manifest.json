@@ -10,8 +10,13 @@
   ],
   "host_permissions": [
     "https://github.com/*/*",
-    "https://api.github.com/*"
+    "https://api.github.com/*",
+    "http://localhost:8000/*"
   ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*"],

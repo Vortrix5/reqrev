@@ -54,3 +54,7 @@ export const EXCLUDED_GITHUB_PAGES = [
 export const STORAGE_PREFIX = 'requirements:' as const;
 
 export const DEFAULT_REQUIREMENT_PREFIX = 'REQ-' as const;
+
+// Backend API Configuration
+// Update this to point to your deployed backend or keep as localhost for development
+export const API_BASE_URL = 'http://localhost:8000/api/v1' as const;

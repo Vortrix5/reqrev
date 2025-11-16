@@ -6,15 +6,13 @@
  */
 
 import React, { useState } from 'react';
-import { useCountBadge } from '../hooks/useCountBadge';
-import { useRequirements } from '../hooks/useRequirements';
-import { Requirement } from '../types';
-import {
-    RequirementEditForm,
-    RequirementsHeader,
-    RequirementsTable
-} from './requirements';
-import { EmptyState, LoadingState, Modal } from './ui';
+import { useCountBadge } from '../../hooks/useCountBadge';
+import { useRequirements } from '../../hooks/useRequirements';
+import { Requirement } from '../../types';
+import { EmptyState, LoadingState, Modal, SmellDetailsPanel } from '../ui';
+import { RequirementEditForm } from './RequirementEditForm';
+import { RequirementsHeader } from './RequirementsHeader';
+import { RequirementsTable } from './RequirementsTable';
 
 interface RequirementsPanelProps {
     repoId: string;
@@ -41,6 +39,7 @@ const RequirementsPanel: React.FC<RequirementsPanelProps> = ({ repoId, onClose }
     const {
         requirements,
         isLoading,
+        analyzingIds,
         addRequirement: addReq,
         updateRequirement,
         deleteRequirement: deleteReq,
@@ -50,17 +49,33 @@ const RequirementsPanel: React.FC<RequirementsPanelProps> = ({ repoId, onClose }
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editDescription, setEditDescription] = useState('');
     const [isNewRequirement, setIsNewRequirement] = useState(false);
+    const [detailsRequirement, setDetailsRequirement] = useState<Requirement | null>(null);
 
     // Update count badge when requirements change
     useCountBadge(requirements.length);
 
     /**
-     * Handle adding a new requirement
+     * Generate next requirement ID without creating it
+     */
+    const generateNextId = (): string => {
+        if (requirements.length === 0) return 'REQ-1';
+
+        const maxNum = requirements.reduce((max, req) => {
+            const match = req.id.match(/REQ-(\d+)/);
+            const num = match ? parseInt(match[1], 10) : 0;
+            return Math.max(max, num);
+        }, 0);
+
+        return `REQ-${maxNum + 1}`;
+    };
+
+    /**
+     * Handle adding a new requirement (draft mode - not saved yet)
      */
     const handleAddRequirement = () => {
-        const newReq = addReq();
-        setEditingId(newReq.id);
-        setEditDescription(newReq.description);
+        const newId = generateNextId();
+        setEditingId(newId);
+        setEditDescription('');
         setIsNewRequirement(true);
         setIsModalOpen(true);
     };
@@ -79,9 +94,15 @@ const RequirementsPanel: React.FC<RequirementsPanelProps> = ({ repoId, onClose }
      * Handle saving edited requirement
      */
     const handleSaveEdit = async () => {
-        if (!editingId) return;
+        if (!editingId || !editDescription.trim()) return;
 
-        updateRequirement(editingId, { description: editDescription });
+        if (isNewRequirement) {
+            // Create new requirement with the entered description
+            addReq(editDescription);
+        } else {
+            // Update existing requirement
+            updateRequirement(editingId, { description: editDescription });
+        }
 
         // Trigger placeholder AI checks
         await flagRequirement(editDescription);
@@ -94,10 +115,7 @@ const RequirementsPanel: React.FC<RequirementsPanelProps> = ({ repoId, onClose }
      * Handle canceling edit
      */
     const handleCancelEdit = () => {
-        // If it's a new requirement that hasn't been saved, delete it
-        if (isNewRequirement && editingId) {
-            deleteReq(editingId);
-        }
+        // No need to delete anything - requirement was never created
         closeModal();
     };
 
@@ -143,6 +161,8 @@ const RequirementsPanel: React.FC<RequirementsPanelProps> = ({ repoId, onClose }
                         requirements={requirements}
                         onEdit={handleStartEdit}
                         onDelete={handleDeleteRequirement}
+                        onViewDetails={setDetailsRequirement}
+                        analyzingIds={analyzingIds}
                     />
                 )}
 
@@ -161,6 +181,15 @@ const RequirementsPanel: React.FC<RequirementsPanelProps> = ({ repoId, onClose }
                         />
                     )}
                 </Modal>
+
+                {detailsRequirement && (
+                    <SmellDetailsPanel
+                        requirementId={detailsRequirement.id}
+                        description={detailsRequirement.description}
+                        smells={detailsRequirement.flags || []}
+                        onClose={() => setDetailsRequirement(null)}
+                    />
+                )}
             </div>
         </div>
     );

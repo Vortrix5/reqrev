@@ -5,6 +5,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_REQUIREMENT_PREFIX, STORAGE_PREFIX } from '../constants';
+import { analyzeRequirement } from '../services/requirementAnalysisService';
 import { Requirement } from '../types';
 import { safeExtensionCall } from '../utils/extensionContext';
 
@@ -14,6 +15,7 @@ import { safeExtensionCall } from '../utils/extensionContext';
 export const useRequirements = (repoId: string) => {
     const [requirements, setRequirements] = useState<Requirement[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
     const storageKey = `${STORAGE_PREFIX}${repoId}`;
 
     /**
@@ -66,6 +68,47 @@ export const useRequirements = (repoId: string) => {
     }, [storageKey]);
 
     /**
+     * Analyze a requirement and update its flags
+     */
+    const analyzeAndUpdateRequirement = useCallback(async (req: Requirement) => {
+        if (!req.description || req.description.trim().length === 0) {
+            return;
+        }
+
+        // Mark as analyzing
+        setAnalyzingIds(prev => new Set(prev).add(req.id));
+
+        try {
+            const result = await analyzeRequirement(req.id, req.description, req.activityPoints);
+
+            if (result) {
+                // Update requirement with smells using state updater to avoid stale closure
+                setRequirements(currentReqs => {
+                    const updatedReqs = currentReqs.map(r =>
+                        r.id === req.id
+                            ? { ...r, flags: result.smells, updatedAt: new Date().toISOString() }
+                            : r
+                    );
+                    // Save to storage
+                    safeExtensionCall(
+                        async () => chrome.storage.local.set({ [storageKey]: updatedReqs })
+                    );
+                    return updatedReqs;
+                });
+            }
+        } catch (error) {
+            console.error(`[ReqRev] Failed to analyze ${req.id}:`, error);
+        } finally {
+            // Remove from analyzing set
+            setAnalyzingIds(prev => {
+                const next = new Set(prev);
+                next.delete(req.id);
+                return next;
+            });
+        }
+    }, [storageKey]);
+
+    /**
      * Add a new requirement
      */
     const addRequirement = useCallback((description?: string): Requirement => {
@@ -74,27 +117,43 @@ export const useRequirements = (repoId: string) => {
             description: description || '',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
+            flags: [],
         };
 
         const updated = [...requirements, newReq];
         saveRequirements(updated);
 
+        // Analyze the new requirement if it has description
+        if (description && description.trim().length > 0) {
+            // Delay slightly to ensure state is updated
+            setTimeout(() => analyzeAndUpdateRequirement(newReq), 100);
+        }
+
         return newReq;
-    }, [requirements, saveRequirements]);
+    }, [requirements, saveRequirements, analyzeAndUpdateRequirement]);
 
     /**
      * Update an existing requirement
      */
-    const updateRequirement = useCallback((id: string, updates: Partial<Requirement>): boolean => {
+    const updateRequirement = useCallback(async (id: string, updates: Partial<Requirement>): Promise<boolean> => {
         const updated = requirements.map(req =>
             req.id === id
                 ? { ...req, ...updates, updatedAt: new Date().toISOString() }
                 : req
         );
 
-        saveRequirements(updated);
+        await saveRequirements(updated);
+
+        // If description was updated, re-analyze
+        if (updates.description !== undefined) {
+            const updatedReq = updated.find(r => r.id === id);
+            if (updatedReq) {
+                analyzeAndUpdateRequirement(updatedReq);
+            }
+        }
+
         return true;
-    }, [requirements, saveRequirements]);
+    }, [requirements, saveRequirements, analyzeAndUpdateRequirement]);
 
     /**
      * Delete a requirement
@@ -115,10 +174,12 @@ export const useRequirements = (repoId: string) => {
     return {
         requirements,
         isLoading,
+        analyzingIds,
         addRequirement,
         updateRequirement,
         deleteRequirement,
         getRequirement,
+        analyzeRequirement: analyzeAndUpdateRequirement,
     };
 };
 

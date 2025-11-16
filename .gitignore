@@ -1,9 +1,14 @@
 # ReqRev Chrome Extension
 
+# Environment files
+.env
+.env.local
+
 ## Directories
 node_modules/
 dist/
 .DS_Store
+.venv/
 
 ## Build artifacts
 *.log

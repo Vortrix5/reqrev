@@ -1,61 +1,138 @@
-# ReqRev - GitHub Requirements Tab Chrome Extension
+# ReqRev - Requir### Backend API
 
-A Chrome extension that adds a **Requirements** tab to GitHub repository pages, allowing teams to manage project requirements directly within GitHub.
+- 🤖 **LLM-Powered Analysis**: Detect requirement smells using OpenAI models
+- 🔒 **Secure**: No API keys in browser extension - all handled server-side
+- 📊 **Comprehensive Taxonomy**: 36 smell labels across 5 categories (Morphological, Lexical, Analytical, Relational, Incompleteness)
+- 🎯 **ISO 29148 Standards**: Based on international requirements engineering standards
+- 🚀 **Fast & Async**: Built with FastAPI for high performance Analysis Platform
 
-![ReqRev Screenshot](https://img.shields.io/badge/Manifest-V3-blue) ![React](https://img.shields.io/badge/React-18.2-61dafb) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178c6)
+A complete requirements management and analysis platform consisting of:
+
+1. **Browser Extension** - Adds a Requirements tab to GitHub repositories
+2. **Backend API** - FastAPI service with LLM-powered requirement smell detection
+
+![ReqRev Screenshot](https://img.shields.io/badge/Manifest-V3-blue) ![React](https://img.shields.io/badge/React-18.2-61dafb) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178c6) ![Python](https://img.shields.io/badge/Python-3.11+-3776ab) ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)
 
 ## ✨ Features
+
+### Browser Extension
 
 - 🔖 **GitHub Integration**: Seamlessly injects a "Requirements" tab into the GitHub navbar
 - 📝 **CRUD Operations**: Create, read, update, and delete requirements
 - 🔢 **Auto-incremented IDs**: Requirements automatically get unique IDs (REQ-1, REQ-2, etc.)
 - 💾 **Local Storage**: All requirements persist per repository using Chrome's storage API
 - 🎨 **GitHub Dark Mode**: Matches GitHub's dark theme with ReqRev's design language
-- 🚀 **Sample Data**: Preloaded with 3 sample requirements on first install
-- 🔮 **Future-Ready**: Placeholder functions for AI-powered requirement analysis
+- 🔍 **AI-Powered Analysis**: One-click smell detection with detailed explanations
+- 🎯 **Visual Smell Badges**: Color-coded severity indicators (Green → Yellow → Orange → Red)
+- 📋 **Comprehensive Details Panel**: Full descriptions, fix suggestions, and before/after examples for all 36 smells
 
-## 🎯 Design Philosophy
+### Backend API
 
-ReqRev follows GitHub's dark mode aesthetic with custom accent colors:
+- 🤖 **LLM-Powered Analysis**: Detect requirement smells using OpenAI GPT models
+- 🔒 **Secure**: No API keys in browser extension - all handled server-side
+- 📊 **Comprehensive Taxonomy**: 36 smell labels across 5 categories (Morphological, Lexical, Analytical, Relational, Incompleteness)
+- 🎯 **ISO 29148 Standards**: Based on international requirements engineering standards
+- 🚀 **Fast & Async**: Built with FastAPI for high performance
+- ✅ **Enhanced Accuracy**: Conservative detection rules to minimize false positives
 
-- **Background**: `#0d1117`
-- **Text**: `#f2f5ff`
-- **Accent Blue**: `#7aa2ff`
-- **Accent Green**: `#64e1ab`
+## 🏗️ Architecture
+
+```
+┌─────────────────┐
+│   Browser       │
+│   Extension     │  HTTPS
+│  (TypeScript)   ├────────┐
+└─────────────────┘        │
+                           ▼
+                    ┌─────────────┐
+                    │   FastAPI   │
+                    │   Backend   │
+                    │  (Python)   │
+                    └──────┬──────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │   OpenAI    │
+                    │  Fine-tuned │
+                    │    Model    │
+                    └─────────────┘
+                    
+   36 Smell Labels Across 5 Categories:
+   • Morphological (shape, readability)
+   • Lexical (word choice, vague terms)
+   • Analytical (grammar, structure)
+   • Relational (dependencies, coupling)
+   • Incompleteness (missing info, errors)
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture documentation.
 
 ## 📁 Project Structure
 
 ```
 reqrev/
-├── manifest.json              # Chrome Extension Manifest V3
-├── package.json              # Node dependencies
-├── webpack.config.js         # Webpack bundler config
-├── tsconfig.json            # TypeScript configuration
-├── src/
-│   ├── contentScript.tsx    # Main injection script
-│   ├── types.ts            # TypeScript type definitions
-│   ├── components/
-│   │   └── RequirementsPanel.tsx  # Main React component
-│   └── styles/
-│       └── reqrev.css       # Custom styles
-└── dist/                    # Built extension (generated)
+├── extension/              # Browser Extension
+│   ├── manifest.json      # Chrome Extension Manifest V3
+│   ├── package.json       # Node dependencies
+│   ├── webpack.config.js  # Webpack bundler config
+│   ├── tsconfig.json      # TypeScript configuration
+│   ├── src/              # Extension source code
+│   │   ├── contentScript.tsx
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── utils/
+│   └── dist/             # Built extension (generated)
+│
+├── api/                   # FastAPI Backend
+│   ├── main.py           # FastAPI app & CORS
+│   ├── config.py         # Environment configuration
+│   ├── routers/          # API endpoints
+│   │   └── requirements.py
+│   └── services/         # Business logic
+│       └── analyzer.py
+│
+├── llm_service/          # LLM Integration Layer
+│   ├── iso29148_detector.py    # Facade
+│   ├── huggingface_client.py   # HuggingFace
+│   ├── openai_client.py        # OpenAI
+│   └── models/
+│       └── requirement_smell_result.py
+│
+├── docs/                 # Documentation
+│   ├── ARCHITECTURE.md   # System architecture
+│   └── API.md           # API documentation
+│
+├── requirements.txt      # Python dependencies
+├── .env.example         # Environment template
+└── README.md            # This file
 ```
 
-## 🚀 Installation & Setup
+## 🚀 Quick Start
 
 ### Prerequisites
 
+**For Browser Extension:**
+
 - Node.js (v16 or higher)
 - npm or yarn
-- Google Chrome browser
+- Google Chrome or Edge browser
 
-### Step 1: Install Dependencies
+**For Backend API:**
+
+- Python 3.11+
+- pip
+- OpenAI API Key
+
+## Extension Setup
+
+### 1. Install Dependencies
 
 ```bash
+cd extension/
 npm install
 ```
 
-### Step 2: Build the Extension
+### 2. Build the Extension
 
 For development with watch mode:
 
@@ -71,20 +148,81 @@ npm run build
 
 This will create a `dist/` folder with the compiled extension.
 
-### Step 3: Load Extension in Chrome
+### 3. Load Extension in Chrome
 
 1. Open Chrome and navigate to `chrome://extensions/`
 2. Enable **Developer mode** (toggle in top-right corner)
 3. Click **Load unpacked**
-4. Select the `dist/` folder from your project directory
+4. Select the `extension/dist/` folder from your project directory
 5. The ReqRev extension icon should appear in your extensions toolbar
 
-### Step 4: Test on GitHub
+### 4. Test on GitHub
 
 1. Navigate to any GitHub repository (e.g., `https://github.com/facebook/react`)
 2. Look for the new **Requirements** tab in the repository navbar
 3. Click it to open the requirements panel
 4. Start managing requirements! 🎉
+
+## Backend API Setup
+
+### 1. Install Python Dependencies
+
+```bash
+# From the project root
+pip install -r requirements.txt
+```
+
+### 2. Configure Environment
+
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env and add your API keys
+nano .env  # or use your favorite editor
+```
+
+**Required Configuration:**
+
+```bash
+# Required: OpenAI API Key
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Model to use (default: gpt-4o-mini)
+# For fine-tuned model: ft:gpt-4o-mini:your-org:model-id:suffix
+OPENAI_MODEL=gpt-4o-mini
+
+# Model parameters
+OPENAI_MAX_TOKENS=1500
+OPENAI_TEMPERATURE=0.1
+```
+
+Get your OpenAI API key at: <https://platform.openai.com/api-keys>
+
+> 💡 **Tip:** For production use, train a fine-tuned model on the comprehensive smell taxonomy and set `OPENAI_MODEL` to your fine-tuned model ID.
+
+### 3. Run the API Server
+
+```bash
+python -m api.main
+```
+
+The API will start at `http://localhost:8000`
+
+You can test it:
+
+```bash
+curl http://localhost:8000/health
+```
+
+### 4. View API Documentation
+
+Open your browser to:
+
+- Interactive API docs: <http://localhost:8000/docs>
+- Alternative docs: <http://localhost:8000/redoc>
+
+See [docs/API.md](docs/API.md) for detailed API documentation.
 
 ## 🎮 Usage
 
@@ -101,6 +239,21 @@ This will create a `dist/` folder with the compiled extension.
 2. Modify the title and/or description
 3. Click **Save** to persist changes
 
+### Analyzing Requirements
+
+1. Click the **"Analyze"** button on any requirement row
+2. The system sends the requirement to the backend API for smell detection
+3. Results appear in the **"Smells Detected"** column with a color-coded badge:
+   - 🟢 **Green (0)**: Perfect - no smells detected
+   - 🟡 **Yellow (1-2)**: Minor issues
+   - 🟠 **Orange (3-5)**: Moderate issues
+   - 🔴 **Red (6+)**: Serious issues
+4. Click the **"Details"** button to open a comprehensive side panel showing:
+   - All detected smells with their categories
+   - What each smell means and why it matters
+   - Step-by-step fix suggestions
+   - Before/after examples
+
 ### Deleting a Requirement
 
 1. Click the delete icon (trash) on any requirement card
@@ -116,9 +269,13 @@ This will create a `dist/` folder with the compiled extension.
 
 ## 🔧 Development
 
-### Scripts
+### Extension Development
+
+**Scripts:**
 
 ```bash
+cd extension/
+
 # Install dependencies
 npm install
 
@@ -132,15 +289,15 @@ npm run build
 npm run clean
 ```
 
-### File Watching
+**File Watching:**
 
-When running `npm run dev`, Webpack watches for file changes and automatically rebuilds. After changes, you'll need to:
+When running `npm run dev`, Webpack watches for file changes and automatically rebuilds. After changes:
 
 1. Go to `chrome://extensions/`
 2. Click the refresh icon on the ReqRev extension
 3. Reload the GitHub page to see updates
 
-### Debugging
+**Debugging:**
 
 Open Chrome DevTools on any GitHub repo page:
 
@@ -148,38 +305,171 @@ Open Chrome DevTools on any GitHub repo page:
 - Check Application → Storage → Local Storage → chrome-extension://...
 - Inspect the injected elements using the Elements panel
 
-## 🔮 Future Enhancements (Placeholders)
+### API Development
 
-The extension includes placeholder functions for AI-powered features:
+**Running the API:**
 
-```typescript
-// Flag potentially ambiguous requirements
-flagRequirement(text: string)
+```bash
+# Run with auto-reload for development
+API_RELOAD=true python -m api.main
 
-// Evaluate requirement clarity score
-evaluateClarity(text: string)
+# Or use uvicorn directly
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-These currently log to console but are ready for backend integration.
+**Testing the API:**
 
-### Planned Features
+```bash
+# Health check
+curl http://localhost:8000/health
 
-- 🤖 AI-powered requirement analysis
-- 🔗 Link requirements to GitHub issues
-- 📊 Requirement traceability matrix
-- 👥 Multi-user collaboration
-- 📈 Requirement metrics dashboard
-- 🔍 Advanced search and filtering
-- 📤 Export to PDF/Markdown
-- 🔔 Change notifications
+# List models
+curl http://localhost:8000/api/v1/models
+
+# Analyze a requirement
+curl -X POST http://localhost:8000/api/v1/analyze_requirement \
+  -H "Content-Type: application/json" \
+  -d '{"requirement_id":"REQ-1","description":"The system shall authenticate users."}'
+```
+
+**Viewing Logs:**
+
+All logs include timestamps and log levels. Set `LOG_LEVEL=DEBUG` in `.env` for detailed logging.
+
+## 🤖 Using the API for Requirement Analysis
+
+Once the API is running, you can analyze requirements for quality issues:
+
+### Example: Analyze a Requirement
+
+```bash
+curl -X POST http://localhost:8000/api/v1/analyze_requirement \
+  -H "Content-Type: application/json" \
+  -d '{
+    "requirement_id": "REQ-1",
+    "description": "The system should maybe provide some user-friendly features.",
+    "activity_points": 45
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "requirement_id": "REQ-1",
+  "description": "The system should maybe provide some user-friendly features.",
+  "smells": ["weak_verb", "subjective", "vagueness"],
+  "explanation": "The requirement uses weak modal verbs ('should', 'maybe'), contains subjective language ('user-friendly'), and is vague.",
+  "raw_model_output": {...}
+}
+```
+
+### Requirement Smells Detected (36 Labels Across 5 Categories)
+
+**🟣 Morphological (5 smells)**: Shape and readability issues
+
+- `too_long_sentence` - Spans >30-40 tokens with multiple "and/or" chains
+- `too_short_sentence` - Very short fragment missing context
+- `unreadable_structure` - Complex syntax, heavy nesting
+- `punctuation_issue` - Excessive or missing punctuation
+- `acronym_overuse_or_abbrev` - Heavy acronyms without introduction
+
+**🟠 Lexical (11 smells)**: Word choice and vague terms
+
+- `non_atomic_requirement` - Multiple actions combined, should be split
+- `negative_formulation` - Uses "shall not" where positive is clearer
+- `vague_pronoun_or_reference` - Uses "it"/"this" without clear referent
+- `subjective_language` - "user-friendly", "fast" without criteria
+- `vague_or_implicit_terms` - "normally", "usually", "etc."
+- `non_verifiable_qualifier` - "as soon as possible" without metrics
+- `loophole_or_open_ended` - "at least" with no bounds
+- `superlative_or_comparative_without_reference` - "faster" with no baseline
+- `quantifier_without_unit_or_range` - "many", numbers without units
+- `design_or_implementation_detail` - Describes HOW instead of WHAT
+- `implicit_requirement` - Behavior only implied, not explicit
+
+**🔵 Analytical (5 smells)**: Grammar and structure
+
+- `overuse_imperative_form` - Long list of commands without conditions
+- `missing_imperative_verb` - No clear action verb
+- `conditional_or_non_assertive_requirement` - Weak modals ("may", "maybe") or excessive "if...then"
+- `passive_voice` - Unclear who performs action
+- `domain_term_imbalance` - Too much jargon or missing domain terms
+
+**🟢 Relational (3 smells)**: Dependencies and coupling
+
+- `too_many_dependencies_or_versions` - References many requirements
+- `excessive_or_insufficient_coupling` - Overly entangled or floating
+- `deep_nesting_or_structure_issue` - Deeply nested hierarchy
+
+**🔴 Incompleteness (12 smells)**: Missing information and errors
+
+- `incomplete_requirement` - Missing trigger, actor, response
+- `incomplete_reference_or_condition` - References undefined things
+- `missing_system_response` - States condition but not action
+- `incorrect_or_confusing_order` - Steps in confusing order
+- `missing_unit_of_measurement` - Numeric values without units
+- `partial_content_or_incomplete_enumeration` - Uses "etc."
+- `embedded_rationale_or_justification` - Mixes "why" into "what"
+- `undefined_term` - Specialized terms not defined
+- `language_error_or_grammar_issue` - Grammar/spelling errors
+- `ambiguous_plurality` - Unclear if applies to all or some
+
+**Detection Accuracy**: Enhanced prompts with conservative rules minimize false positives. Simple conditional requirements with clear "shall" statements (e.g., "When X, the system shall Y") won't be flagged.
+
+## 🔮 Roadmap
+
+### Completed ✅
+
+- ✅ Browser extension with requirements management (CRUD operations)
+- ✅ FastAPI backend with CORS security
+- ✅ OpenAI integration with comprehensive smell taxonomy (36 labels)
+- ✅ 5-category smell detection (Morphological, Lexical, Analytical, Relational, Incompleteness)
+- ✅ Extension-to-API integration for smell analysis
+- ✅ Color-coded smell count badges (Green/Yellow/Orange/Red severity levels)
+- ✅ Comprehensive smell details panel with descriptions, fix suggestions, and examples
+- ✅ Enhanced detection accuracy with conservative prompts to minimize false positives
+- ✅ Complete documentation with architecture guides and API references
+
+### In Progress 🚧
+
+- 🔄 Result caching for performance optimization
+- 🔄 Batch requirement analysis
+
+### Planned 📋
+
+- Database layer for analysis history
+- User authentication and accounts
+- Batch requirement analysis
+- Requirements traceability matrix
+- Link requirements to GitHub issues
+- Export to PDF/Markdown
+- Custom smell definitions
+- Training feedback loop
 
 ## 🛠️ Technical Stack
+
+### Browser Extension
 
 - **React 18.2**: UI component framework
 - **TypeScript 5.3**: Type-safe JavaScript
 - **Webpack 5**: Module bundler
 - **Chrome Extension Manifest V3**: Latest extension standard
 - **Chrome Storage API**: Local data persistence
+
+### Backend API
+
+- **FastAPI 0.115**: Modern Python web framework
+- **Pydantic**: Data validation and settings management
+- **Uvicorn**: ASGI server
+- **httpx**: Async HTTP client
+
+### LLM Integration
+
+- **OpenAI API**: GPT models (base or fine-tuned)
+- **Comprehensive Taxonomy**: 36 smell labels across 5 categories
+- **Structured Output**: JSON format with smells and explanations
+- **Async/Await**: Non-blocking LLM calls
 
 ## 📝 Notes
 

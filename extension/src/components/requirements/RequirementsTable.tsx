@@ -11,12 +11,16 @@ interface RequirementsTableProps {
     requirements: Requirement[];
     onEdit: (requirement: Requirement) => void;
     onDelete: (id: string) => void;
+    onViewDetails: (requirement: Requirement) => void;
+    analyzingIds?: Set<string>;
 }
 
 export const RequirementsTable: React.FC<RequirementsTableProps> = ({
     requirements,
     onEdit,
     onDelete,
+    onViewDetails,
+    analyzingIds = new Set(),
 }) => {
     return (
         <div className="reqrev-table-container">
@@ -26,7 +30,8 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
                         <th className="reqrev-th-id">ID</th>
                         <th className="reqrev-th-description">Description</th>
                         <th className="reqrev-th-activity">Activity Points</th>
-                        <th className="reqrev-th-flags">Flags</th>
+                        <th className="reqrev-th-smells">Smells Detected</th>
+                        <th className="reqrev-th-details">Analysis</th>
                         <th className="reqrev-th-actions">Actions</th>
                     </tr>
                 </thead>
@@ -37,6 +42,8 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
                             requirement={req}
                             onEdit={onEdit}
                             onDelete={onDelete}
+                            onViewDetails={onViewDetails}
+                            isAnalyzing={analyzingIds.has(req.id)}
                         />
                     ))}
                 </tbody>

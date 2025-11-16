@@ -1,0 +1,548 @@
+/**
+ * Comprehensive smell descriptions and fix suggestions
+ * Provides detailed information about each requirement smell and how to fix it
+ */
+
+import { SMELL_CATEGORIES, SMELL_DISPLAY_NAMES, SmellCategory } from './smellCategories';
+
+export interface SmellDetails {
+    name: string;
+    category: SmellCategory;
+    description: string;
+    why_it_matters: string;
+    how_to_fix: string[];
+    example_before: string;
+    example_after: string;
+}
+
+export const SMELL_DETAILS: Record<string, SmellDetails> = {
+    // MORPHOLOGICAL SMELLS
+    'too_long_sentence': {
+        name: SMELL_DISPLAY_NAMES['too_long_sentence'],
+        category: 'morphological',
+        description: 'The requirement is too long and complex, making it difficult to understand, implement, and verify.',
+        why_it_matters: 'Long requirements are harder to read, more likely to contain multiple requirements, and increase the risk of misunderstanding.',
+        how_to_fix: [
+            'Break into multiple smaller requirements',
+            'Remove unnecessary details and explanations',
+            'Focus on a single concern per requirement',
+            'Move implementation details to design documents'
+        ],
+        example_before: 'The system shall provide secure user authentication using OAuth 2.0 or similar industry-standard protocols with multi-factor authentication support including SMS, email, and authenticator apps, and shall also log all authentication attempts with timestamps and IP addresses for security auditing purposes.',
+        example_after: 'REQ-1: The system shall authenticate users using OAuth 2.0.\nREQ-2: The system shall support multi-factor authentication.\nREQ-3: The system shall log all authentication attempts.'
+    },
+    'too_short_sentence': {
+        name: SMELL_DISPLAY_NAMES['too_short_sentence'],
+        category: 'morphological',
+        description: 'The requirement is too brief and lacks necessary information for proper implementation.',
+        why_it_matters: 'Short requirements often omit critical details, leading to ambiguity and varied interpretations.',
+        how_to_fix: [
+            'Add specific acceptance criteria',
+            'Include constraints and conditions',
+            'Specify expected behavior clearly',
+            'Define what constitutes successful completion'
+        ],
+        example_before: 'The system shall be fast.',
+        example_after: 'The system shall respond to 95% of API requests within 200ms under normal load conditions.'
+    },
+    'poor_readability': {
+        name: SMELL_DISPLAY_NAMES['poor_readability'],
+        category: 'morphological',
+        description: 'The requirement uses complex sentence structure or poor formatting that hinders comprehension.',
+        why_it_matters: 'Poor readability increases the chance of misinterpretation and errors during implementation.',
+        how_to_fix: [
+            'Use simple, clear sentence structures',
+            'Break complex sentences into multiple simple ones',
+            'Use consistent terminology throughout',
+            'Follow the "shall" convention for requirements'
+        ],
+        example_before: 'In the event that a user attempts to access restricted content without proper authorization, the system should, depending on configuration, either redirect to login or display an error.',
+        example_after: 'The system shall redirect unauthorized users to the login page when they attempt to access restricted content.'
+    },
+    'bullet_lists': {
+        name: SMELL_DISPLAY_NAMES['bullet_lists'],
+        category: 'morphological',
+        description: 'The requirement contains bullet lists, which can make individual items hard to trace and verify.',
+        why_it_matters: 'Bullet lists often hide multiple requirements within one, making testing and traceability difficult.',
+        how_to_fix: [
+            'Convert each bullet point into a separate requirement',
+            'Give each requirement a unique identifier',
+            'Ensure each requirement is independently testable',
+            'Use cross-references if requirements are related'
+        ],
+        example_before: 'The system shall support:\n• User authentication\n• Data encryption\n• Audit logging',
+        example_after: 'REQ-1: The system shall authenticate users.\nREQ-2: The system shall encrypt sensitive data.\nREQ-3: The system shall log security events.'
+    },
+    'compound_requirement': {
+        name: SMELL_DISPLAY_NAMES['compound_requirement'],
+        category: 'morphological',
+        description: 'Multiple distinct requirements are combined into a single statement using "and" or "or".',
+        why_it_matters: 'Compound requirements are difficult to test individually and may have different priorities.',
+        how_to_fix: [
+            'Split into separate requirements',
+            'Test each requirement independently',
+            'Allow separate prioritization',
+            'Remove conjunctions that join distinct concerns'
+        ],
+        example_before: 'The system shall encrypt data at rest and in transit and shall provide audit logs.',
+        example_after: 'REQ-1: The system shall encrypt data at rest.\nREQ-2: The system shall encrypt data in transit.\nREQ-3: The system shall provide audit logs.'
+    },
+    'incomplete_list': {
+        name: SMELL_DISPLAY_NAMES['incomplete_list'],
+        category: 'morphological',
+        description: 'A list of items appears incomplete or uses vague terms like "etc.", "and so on".',
+        why_it_matters: 'Incomplete lists leave requirements open to interpretation and make verification impossible.',
+        how_to_fix: [
+            'List all required items explicitly',
+            'Remove "etc.", "and so on", "such as"',
+            'If the list is open-ended, create a separate requirement for extensibility',
+            'Use "including but not limited to" only when truly necessary'
+        ],
+        example_before: 'The system shall support common file formats such as PDF, Word, etc.',
+        example_after: 'The system shall support the following file formats: PDF, DOCX, XLSX, and TXT.'
+    },
+    'unclear_responsibility': {
+        name: SMELL_DISPLAY_NAMES['unclear_responsibility'],
+        category: 'morphological',
+        description: 'It\'s unclear who or what component is responsible for fulfilling the requirement.',
+        why_it_matters: 'Unclear responsibility leads to confusion during implementation and testing.',
+        how_to_fix: [
+            'Specify the subject clearly (e.g., "The system", "The user interface", "The API")',
+            'Use consistent terminology for system components',
+            'Define responsibility boundaries in a glossary',
+            'Avoid passive voice when possible'
+        ],
+        example_before: 'Data should be validated before storage.',
+        example_after: 'The API layer shall validate all input data before passing it to the database.'
+    },
+
+    // LEXICAL SMELLS
+    'subjective_language': {
+        name: SMELL_DISPLAY_NAMES['subjective_language'],
+        category: 'lexical',
+        description: 'Uses subjective terms like "user-friendly", "intuitive", "fast" without measurable criteria.',
+        why_it_matters: 'Subjective terms cannot be objectively tested or verified.',
+        how_to_fix: [
+            'Replace with measurable criteria',
+            'Define specific thresholds and metrics',
+            'Use quantifiable performance indicators',
+            'Reference industry standards where applicable'
+        ],
+        example_before: 'The user interface shall be intuitive and user-friendly.',
+        example_after: 'The user interface shall enable 80% of users to complete core tasks without consulting documentation.'
+    },
+    'vague_or_implicit_terms': {
+        name: SMELL_DISPLAY_NAMES['vague_or_implicit_terms'],
+        category: 'lexical',
+        description: 'Contains vague terms like "appropriate", "adequate", "reasonable" without definition.',
+        why_it_matters: 'Vague terms lead to different interpretations by different stakeholders.',
+        how_to_fix: [
+            'Replace vague terms with specific values',
+            'Define what "appropriate" means in context',
+            'Use concrete examples',
+            'Add acceptance criteria'
+        ],
+        example_before: 'The system shall provide appropriate error messages.',
+        example_after: 'The system shall display error messages that include the error type, timestamp, and suggested corrective action.'
+    },
+    'ambiguous_pronouns': {
+        name: SMELL_DISPLAY_NAMES['ambiguous_pronouns'],
+        category: 'lexical',
+        description: 'Uses pronouns like "it", "this", "that" where the referent is unclear.',
+        why_it_matters: 'Ambiguous pronouns create confusion about what entity is being referenced.',
+        how_to_fix: [
+            'Replace pronouns with specific nouns',
+            'Repeat the subject if necessary for clarity',
+            'Restructure the sentence to eliminate ambiguity',
+            'Use the full term instead of shortcuts'
+        ],
+        example_before: 'When the user submits a form, it shall be validated.',
+        example_after: 'When the user submits a form, the system shall validate the form data.'
+    },
+    'non_verifiable_qualifier': {
+        name: SMELL_DISPLAY_NAMES['non_verifiable_qualifier'],
+        category: 'lexical',
+        description: 'Contains qualifiers like "maximize", "minimize", "optimize" without specific targets.',
+        why_it_matters: 'Non-verifiable qualifiers cannot be objectively tested or confirmed.',
+        how_to_fix: [
+            'Define specific optimization goals',
+            'Set measurable thresholds',
+            'Specify acceptable ranges',
+            'Use concrete metrics'
+        ],
+        example_before: 'The system shall minimize response time.',
+        example_after: 'The system shall respond to requests in less than 200ms for 95% of transactions.'
+    },
+    'comparative_language': {
+        name: SMELL_DISPLAY_NAMES['comparative_language'],
+        category: 'lexical',
+        description: 'Uses comparative terms like "faster", "better", "more" without a baseline for comparison.',
+        why_it_matters: 'Comparisons without baselines are meaningless and untestable.',
+        how_to_fix: [
+            'Specify what you\'re comparing against',
+            'Provide absolute values instead of relatives',
+            'Define the baseline or reference point',
+            'Use quantitative measurements'
+        ],
+        example_before: 'The new system shall be faster than the old one.',
+        example_after: 'The system shall process transactions in under 100ms, compared to the current 500ms average.'
+    },
+    'escape_clause': {
+        name: SMELL_DISPLAY_NAMES['escape_clause'],
+        category: 'lexical',
+        description: 'Contains loopholes like "if possible", "as appropriate", "when necessary".',
+        why_it_matters: 'Escape clauses make requirements optional and hard to enforce.',
+        how_to_fix: [
+            'Make the requirement mandatory if it\'s truly needed',
+            'Define specific conditions when it applies',
+            'Split into a must-have and a nice-to-have requirement',
+            'Remove the escape clause entirely'
+        ],
+        example_before: 'The system shall encrypt data when possible.',
+        example_after: 'The system shall encrypt all sensitive data using AES-256 encryption.'
+    },
+    'optional_language': {
+        name: SMELL_DISPLAY_NAMES['optional_language'],
+        category: 'lexical',
+        description: 'Uses "may", "might", "could" instead of "shall", making the requirement optional.',
+        why_it_matters: 'Optional language creates ambiguity about whether the feature is required.',
+        how_to_fix: [
+            'Use "shall" for mandatory requirements',
+            'Use "should" only for recommendations',
+            'Create separate requirements for optional features',
+            'Be explicit about what is required vs. nice-to-have'
+        ],
+        example_before: 'The system may send email notifications.',
+        example_after: 'The system shall send email notifications when a user\'s password is changed.'
+    },
+    'incomplete_comparison': {
+        name: SMELL_DISPLAY_NAMES['incomplete_comparison'],
+        category: 'lexical',
+        description: 'Makes a comparison without specifying what is being compared to.',
+        why_it_matters: 'Incomplete comparisons are meaningless without context.',
+        how_to_fix: [
+            'Complete the comparison with a reference point',
+            'Use absolute values instead',
+            'Specify both sides of the comparison',
+            'Provide context and baseline'
+        ],
+        example_before: 'The system shall have higher availability.',
+        example_after: 'The system shall provide 99.9% uptime, compared to the current 99% SLA.'
+    },
+    'temporal_ambiguity': {
+        name: SMELL_DISPLAY_NAMES['temporal_ambiguity'],
+        category: 'lexical',
+        description: 'Uses vague time references like "eventually", "soon", "as soon as possible".',
+        why_it_matters: 'Temporal ambiguity makes it impossible to verify timing requirements.',
+        how_to_fix: [
+            'Specify exact time limits',
+            'Use concrete durations (seconds, minutes, hours)',
+            'Define "immediately" if used',
+            'Set measurable response time requirements'
+        ],
+        example_before: 'The system shall process requests as soon as possible.',
+        example_after: 'The system shall process requests within 2 seconds of submission.'
+    },
+    'universal_quantifiers': {
+        name: SMELL_DISPLAY_NAMES['universal_quantifiers'],
+        category: 'lexical',
+        description: 'Uses absolute terms like "all", "every", "always", "never" that may be impossible to verify.',
+        why_it_matters: 'Universal quantifiers are often impractical and may have unintended exceptions.',
+        how_to_fix: [
+            'Consider if exceptions exist',
+            'Use percentages instead (e.g., 99.9%)',
+            'Define the normal operating conditions',
+            'Specify known exceptions explicitly'
+        ],
+        example_before: 'The system shall never lose user data.',
+        example_after: 'The system shall prevent data loss through daily automated backups and maintain 99.999% data integrity.'
+    },
+    'implicit_logical_operators': {
+        name: SMELL_DISPLAY_NAMES['implicit_logical_operators'],
+        category: 'lexical',
+        description: 'Logical relationships (AND, OR, NOT) are implied but not clearly stated.',
+        why_it_matters: 'Implicit logic can be misinterpreted, leading to incorrect implementation.',
+        how_to_fix: [
+            'Make all logical operators explicit',
+            'Use clear conditional statements',
+            'Break complex logic into separate requirements',
+            'Use truth tables for complex conditions'
+        ],
+        example_before: 'The system shall authenticate users with passwords or biometrics.',
+        example_after: 'The system shall authenticate users using either password OR biometric verification (fingerprint, face recognition).'
+    },
+
+    // ANALYTICAL SMELLS
+    'passive_voice': {
+        name: SMELL_DISPLAY_NAMES['passive_voice'],
+        category: 'analytical',
+        description: 'Uses passive voice, obscuring who is responsible for the action.',
+        why_it_matters: 'Passive voice makes it unclear which component should perform the action.',
+        how_to_fix: [
+            'Rewrite in active voice',
+            'Specify the subject (system, user, admin)',
+            'Make responsibility explicit',
+            'Use "The system shall..." format'
+        ],
+        example_before: 'User credentials shall be validated.',
+        example_after: 'The authentication service shall validate user credentials.'
+    },
+    'improper_grammar': {
+        name: SMELL_DISPLAY_NAMES['improper_grammar'],
+        category: 'analytical',
+        description: 'Contains grammatical errors that affect clarity and professionalism.',
+        why_it_matters: 'Grammar errors can change meaning and reduce confidence in the requirements.',
+        how_to_fix: [
+            'Proofread carefully',
+            'Use grammar checking tools',
+            'Have requirements reviewed by others',
+            'Follow standard requirement writing conventions'
+        ],
+        example_before: 'The system shall displays error message when user enter invalid data.',
+        example_after: 'The system shall display an error message when the user enters invalid data.'
+    },
+    'complex_condition': {
+        name: SMELL_DISPLAY_NAMES['complex_condition'],
+        category: 'analytical',
+        description: 'Contains complex conditional logic that is difficult to understand and test.',
+        why_it_matters: 'Complex conditions increase the likelihood of implementation errors and incomplete testing.',
+        how_to_fix: [
+            'Break into multiple simpler requirements',
+            'Create a decision table for complex logic',
+            'Use separate requirements for each condition',
+            'Document edge cases explicitly'
+        ],
+        example_before: 'If the user is authenticated and has admin privileges or is a premium user with valid subscription, and the requested resource is available and not locked by another user, then grant access.',
+        example_after: 'Create separate requirements: REQ-1: Grant access to authenticated admin users. REQ-2: Grant access to authenticated premium users with valid subscriptions. REQ-3: Deny access to locked resources.'
+    },
+    'non_atomic': {
+        name: SMELL_DISPLAY_NAMES['non_atomic'],
+        category: 'analytical',
+        description: 'The requirement contains multiple testable statements that should be separated.',
+        why_it_matters: 'Non-atomic requirements cannot be tested independently and may have different priorities.',
+        how_to_fix: [
+            'Extract each testable statement into its own requirement',
+            'Remove conjunctions that join separate concerns',
+            'Ensure each requirement is independently verifiable',
+            'Create cross-references between related requirements'
+        ],
+        example_before: 'The system shall hash passwords using bcrypt and shall enforce password complexity rules including minimum length, special characters, and numbers.',
+        example_after: 'REQ-1: The system shall hash passwords using bcrypt. REQ-2: The system shall enforce password complexity rules (see REQ-3 to REQ-5).'
+    },
+    'negative_requirement': {
+        name: SMELL_DISPLAY_NAMES['negative_requirement'],
+        category: 'analytical',
+        description: 'States what the system shall NOT do instead of what it SHALL do.',
+        why_it_matters: 'Negative requirements are harder to test and may leave the actual expected behavior unclear.',
+        how_to_fix: [
+            'Restate as a positive requirement',
+            'Specify what should happen instead',
+            'Define the expected behavior explicitly',
+            'Use constraints as separate requirements if needed'
+        ],
+        example_before: 'The system shall not allow users to access restricted content.',
+        example_after: 'The system shall redirect unauthorized users to the login page when they attempt to access restricted content.'
+    },
+
+    // RELATIONAL SMELLS
+    'missing_reference': {
+        name: SMELL_DISPLAY_NAMES['missing_reference'],
+        category: 'relational',
+        description: 'References other requirements, components, or standards without providing identifiers.',
+        why_it_matters: 'Missing references make it difficult to trace dependencies and understand context.',
+        how_to_fix: [
+            'Add specific requirement IDs (e.g., REQ-123)',
+            'Reference standards with full names and versions (e.g., ISO 29148:2018)',
+            'Include document names and section numbers',
+            'Create a glossary for commonly referenced items'
+        ],
+        example_before: 'The system shall comply with the security requirements mentioned earlier.',
+        example_after: 'The system shall comply with security requirements defined in REQ-45 through REQ-52.'
+    },
+    'dependency_coupling': {
+        name: SMELL_DISPLAY_NAMES['dependency_coupling'],
+        category: 'relational',
+        description: 'Has tight coupling with other requirements without explicit documentation.',
+        why_it_matters: 'Hidden dependencies make it difficult to understand impact of changes.',
+        how_to_fix: [
+            'Document all dependencies explicitly',
+            'Use requirement IDs to link related requirements',
+            'Create a dependency matrix',
+            'Specify the nature of the dependency'
+        ],
+        example_before: 'The payment processing shall use the authentication system.',
+        example_after: 'The payment processing module shall verify user identity using the authentication service (REQ-23) before processing transactions.'
+    },
+    'circular_dependency': {
+        name: SMELL_DISPLAY_NAMES['circular_dependency'],
+        category: 'relational',
+        description: 'Creates circular references where requirements depend on each other.',
+        why_it_matters: 'Circular dependencies make it impossible to implement requirements in a logical order.',
+        how_to_fix: [
+            'Identify and break the circular dependency',
+            'Create a common dependency that both can reference',
+            'Restructure requirements to establish a clear hierarchy',
+            'Use interfaces to decouple dependencies'
+        ],
+        example_before: 'REQ-A depends on REQ-B, and REQ-B depends on REQ-A.',
+        example_after: 'REQ-A and REQ-B both depend on REQ-C (common interface), breaking the cycle.'
+    },
+
+    // INCOMPLETENESS SMELLS
+    'missing_condition': {
+        name: SMELL_DISPLAY_NAMES['missing_condition'],
+        category: 'incompleteness',
+        description: 'The "when" or "if" condition is not specified.',
+        why_it_matters: 'Without conditions, it\'s unclear when the requirement applies.',
+        how_to_fix: [
+            'Add explicit preconditions',
+            'Specify triggering events',
+            'Define the context in which the requirement applies',
+            'Use "when" or "if" clauses'
+        ],
+        example_before: 'The system shall send a notification.',
+        example_after: 'When a user\'s password expires, the system shall send an email notification.'
+    },
+    'missing_actor': {
+        name: SMELL_DISPLAY_NAMES['missing_actor'],
+        category: 'incompleteness',
+        description: 'Does not specify who or what performs the action.',
+        why_it_matters: 'Without an actor, responsibility for the requirement is unclear.',
+        how_to_fix: [
+            'Specify the subject (user, admin, system, component)',
+            'Use "The [actor] shall..." format',
+            'Define roles clearly in a glossary',
+            'Be specific about which component is responsible'
+        ],
+        example_before: 'Authentication shall be performed.',
+        example_after: 'The authentication service shall verify user credentials.'
+    },
+    'missing_action': {
+        name: SMELL_DISPLAY_NAMES['missing_action'],
+        category: 'incompleteness',
+        description: 'The main verb or action is missing or unclear.',
+        why_it_matters: 'Without a clear action, implementers don\'t know what to build.',
+        how_to_fix: [
+            'Include a clear action verb (validate, process, display, etc.)',
+            'Use active voice',
+            'Be specific about what should happen',
+            'Follow the "shall [action]" pattern'
+        ],
+        example_before: 'The system shall user data.',
+        example_after: 'The system shall validate user data before storage.'
+    },
+    'missing_object': {
+        name: SMELL_DISPLAY_NAMES['missing_object'],
+        category: 'incompleteness',
+        description: 'The object of the action is not specified.',
+        why_it_matters: 'Without an object, it\'s unclear what the action applies to.',
+        how_to_fix: [
+            'Specify what is being acted upon',
+            'Include the target of the action',
+            'Be explicit about data, components, or resources',
+            'Complete the sentence structure'
+        ],
+        example_before: 'The system shall encrypt.',
+        example_after: 'The system shall encrypt all sensitive user data at rest.'
+    },
+    'missing_unit': {
+        name: SMELL_DISPLAY_NAMES['missing_unit'],
+        category: 'incompleteness',
+        description: 'Includes a number without specifying the unit of measurement.',
+        why_it_matters: 'Numbers without units are ambiguous (seconds? milliseconds? minutes?).',
+        how_to_fix: [
+            'Always include units (ms, seconds, MB, GB, etc.)',
+            'Use standard units',
+            'Be consistent with unit usage across requirements',
+            'Specify precision if important'
+        ],
+        example_before: 'The system shall respond within 200.',
+        example_after: 'The system shall respond within 200 milliseconds.'
+    },
+    'missing_constraint': {
+        name: SMELL_DISPLAY_NAMES['missing_constraint'],
+        category: 'incompleteness',
+        description: 'Lacks important constraints or limits that bound the requirement.',
+        why_it_matters: 'Without constraints, the requirement may be technically infeasible.',
+        how_to_fix: [
+            'Add operating conditions (normal load, peak load)',
+            'Specify limits and boundaries',
+            'Define acceptable ranges',
+            'Include environmental constraints'
+        ],
+        example_before: 'The system shall process all requests.',
+        example_after: 'The system shall process all requests within 200ms under normal load (up to 1000 concurrent users).'
+    },
+    'missing_success_criteria': {
+        name: SMELL_DISPLAY_NAMES['missing_success_criteria'],
+        category: 'incompleteness',
+        description: 'Does not define what constitutes successful fulfillment.',
+        why_it_matters: 'Without success criteria, testing and acceptance are impossible.',
+        how_to_fix: [
+            'Define measurable acceptance criteria',
+            'Specify expected outcomes',
+            'Include verification methods',
+            'Add quantifiable metrics'
+        ],
+        example_before: 'The system shall be reliable.',
+        example_after: 'The system shall achieve 99.9% uptime measured over monthly intervals.'
+    },
+    'implementation_detail': {
+        name: SMELL_DISPLAY_NAMES['implementation_detail'],
+        category: 'incompleteness',
+        description: 'Specifies HOW instead of WHAT, constraining design unnecessarily.',
+        why_it_matters: 'Implementation details in requirements reduce design flexibility.',
+        how_to_fix: [
+            'Focus on what needs to be achieved, not how',
+            'Move implementation details to design documents',
+            'Specify requirements in terms of behavior and outcomes',
+            'Only constrain implementation when truly necessary (security, compliance)'
+        ],
+        example_before: 'The system shall use a red-black tree to store user sessions.',
+        example_after: 'The system shall provide O(log n) lookup time for user session retrieval.'
+    },
+    'unverifiable_term': {
+        name: SMELL_DISPLAY_NAMES['unverifiable_term'],
+        category: 'incompleteness',
+        description: 'Uses terms that cannot be objectively verified or tested.',
+        why_it_matters: 'Unverifiable requirements cannot be proven to be met.',
+        how_to_fix: [
+            'Replace with measurable criteria',
+            'Define specific test procedures',
+            'Use quantifiable metrics',
+            'Reference industry standards for vague quality attributes'
+        ],
+        example_before: 'The system shall be maintainable.',
+        example_after: 'The system shall enable developers to add new features with less than 40 hours of development time for 80% of requested enhancements.'
+    },
+    'weak_verb': {
+        name: SMELL_DISPLAY_NAMES['weak_verb'],
+        category: 'incompleteness',
+        description: 'Uses weak verbs like "support", "handle", "process" without specificity.',
+        why_it_matters: 'Weak verbs are vague and don\'t specify the exact behavior required.',
+        how_to_fix: [
+            'Replace with specific action verbs (validate, authenticate, encrypt, display)',
+            'Define exactly what "support" or "handle" means',
+            'Be explicit about the expected behavior',
+            'Use precise technical terminology'
+        ],
+        example_before: 'The system shall support user authentication.',
+        example_after: 'The system shall authenticate users by verifying username and password against the user database.'
+    },
+};
+
+/**
+ * Get detailed information about a specific smell
+ */
+export function getSmellDetails(smellLabel: string): SmellDetails | null {
+    return SMELL_DETAILS[smellLabel] || null;
+}
+
+/**
+ * Get all smells for a specific category
+ */
+export function getSmellsByCategory(category: SmellCategory): SmellDetails[] {
+    return Object.entries(SMELL_DETAILS)
+        .filter(([_, details]) => details.category === category)
+        .map(([_, details]) => details);
+}

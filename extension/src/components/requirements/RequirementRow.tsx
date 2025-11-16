@@ -5,18 +5,25 @@
 
 import React from 'react';
 import { Requirement } from '../../types';
+import { SmellCountBadge } from '../ui';
 
 interface RequirementRowProps {
     requirement: Requirement;
     onEdit: (requirement: Requirement) => void;
     onDelete: (id: string) => void;
+    onViewDetails: (requirement: Requirement) => void;
+    isAnalyzing?: boolean;
 }
 
 export const RequirementRow: React.FC<RequirementRowProps> = ({
     requirement,
     onEdit,
     onDelete,
+    onViewDetails,
+    isAnalyzing = false,
 }) => {
+    const smellCount = requirement.flags?.length || 0;
+
     return (
         <tr className="reqrev-table-row">
             <td className="reqrev-td-id">
@@ -26,10 +33,25 @@ export const RequirementRow: React.FC<RequirementRowProps> = ({
                 <span className="reqrev-requirement-description">{requirement.description}</span>
             </td>
             <td className="reqrev-td-activity">
-                <span className="reqrev-activity-placeholder">-</span>
+                <span className="reqrev-activity-placeholder">
+                    {requirement.activityPoints !== undefined ? requirement.activityPoints : '-'}
+                </span>
             </td>
-            <td className="reqrev-td-flags">
-                <span className="reqrev-flags-placeholder">-</span>
+            <td className="reqrev-td-smells">
+                <SmellCountBadge count={smellCount} isAnalyzing={isAnalyzing} />
+            </td>
+            <td className="reqrev-td-details">
+                <button
+                    className="reqrev-btn-details"
+                    onClick={() => onViewDetails(requirement)}
+                    title="View detailed analysis and fix suggestions"
+                    disabled={isAnalyzing}
+                >
+                    <svg height="16" viewBox="0 0 16 16" width="16" style={{ marginRight: '4px' }}>
+                        <path fill="currentColor" d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z" />
+                    </svg>
+                    Details
+                </button>
             </td>
             <td className="reqrev-td-actions">
                 <div className="reqrev-requirement-actions">
