@@ -1,0 +1,37 @@
+requirement_id,description
+R1,The system should maybe allow users to log in with some sort of secure method.
+R2,The mobile app might send notifications when it thinks something important has happened.
+R3,"The website should, where possible, prevent users from making obvious mistakes during checkout."
+R4,The system may try to back up data every night if it is convenient.
+R5,The report generation feature should generally respond quickly.
+R6,The user interface shall be extremely intuitive and look modern at all times.
+R7,The dashboard must make users feel confident and happy about their financial decisions.
+R8,The system shall avoid annoying the user with too many pop-ups.
+R9,The help messages should be friendly and not too technical.
+R10,The mobile app must be beautiful and pleasant to use on all devices.
+R11,The system shall load pages fast even under heavy usage.
+R12,The API response time should be acceptable for all customers.
+R13,The server shall handle a large number of concurrent users.
+R14,The application must provide high security for user data.
+R15,The system shall rarely crash during normal operation.
+R16,The system shall authenticate the user and display the dashboard and send a welcome email after login.
+R17,"The report screen shall show the chart, export to PDF, update live data, and allow admins to add new metrics."
+R18,The system shall back up the database every night and restore it automatically if anything goes wrong.
+R19,The app must track the user's location and battery usage while providing accurate recommendations.
+R20,The payment module shall calculate taxes correctly and be very fast and be easy to maintain.
+R21,The system shall send it to the user once they approve it.
+R22,"If the device is disconnected, it shall notify the operator before it stops."
+R23,The application shall log all important events etc. for later analysis.
+R24,Customer information shall be stored in the Client Table while the customer data is processed in the User module.
+R25,The system shall follow the company security policy document where applicable.
+R26,The system shall store all user profiles in a single PostgreSQL database running on port 5432.
+R27,The application shall use a React front-end and a Node.js back-end for all user-facing features.
+R28,Passwords must be hashed using exactly SHA-1 and saved in a 'passwords' table.
+R29,The logistics service shall communicate with the warehouse through a daily CSV file placed in /tmp/inbox.
+R30,The system shall not allow any unauthorized or suspicious activities.
+R31,The app shall never lose important data.
+R32,The user profile page shall display all relevant information about the user.
+R33,The reporting module shall implement the KP-Alpha algorithm as described in the internal wiki.
+R34,The audit trail shall capture everything that happened in the system.
+R35,The system shall provide GDPR-compliant processing of user data (details TBD).
+R36,The notification service must retry failed messages a few times before giving up.

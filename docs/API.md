@@ -205,6 +205,121 @@ const result = await response.json();
 console.log('Detected smells:', result.smells);
 ```
 
+### 1b. Analyze Requirement with LLM-as-Judge
+
+Analyzes a requirement using the primary OpenAI model AND evaluates the results with a secondary LLM-as-judge on OpenRouter.
+
+**Endpoint**: `POST /api/v1/analyze_requirement_with_judge`
+
+**Purpose**: Research and evaluation of smell detection quality. The browser extension does NOT need to use this endpoint.
+
+**Request Headers**:
+
+```
+Content-Type: application/json
+```
+
+**Request Body**: Same as `/analyze_requirement`
+
+```json
+{
+  "requirement_id": "string",
+  "description": "string",
+  "activity_points": 85  // optional, integer 0-100
+}
+```
+
+**Response**: `200 OK`
+
+```json
+{
+  "requirement_id": "REQ-1",
+  "description": "The system should maybe provide some kind of user-friendly authentication.",
+  "smells": [
+    "conditional_or_non_assertive_requirement",
+    "subjective_language",
+    "vague_or_implicit_terms",
+    "non_verifiable_qualifier"
+  ],
+  "explanation": "The requirement uses weak modal verbs ('should', 'maybe'), contains subjective language ('user-friendly'), and vague terms ('some kind of'), making it unclear and unmeasurable.",
+  "raw_model_output": {
+    "model": "gpt-4o-mini",
+    "content": {...},
+    "usage": {...}
+  },
+  "judge_evaluation": {
+    "verdict": "review",
+    "score": 0.78,
+    "justification": "The predicted smells are mostly appropriate but miss the 'implicit_requirement' smell; the explanation is correct but could mention missing units.",
+    "suggested_corrections": [
+      "Consider adding 'implicit_requirement' - authentication method is implied but not explicit",
+      "Explanation should clarify that 'user-friendly' lacks measurable criteria"
+    ],
+    "raw_judge_output": {
+      "model": "meta-llama/llama-3.3-70b-instruct:free",
+      "content": {...},
+      "usage": {...}
+    }
+  }
+}
+```
+
+**Response Schema Extension**:
+
+In addition to all fields from `/analyze_requirement`, this endpoint adds:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `judge_evaluation` | object | Independent evaluation by judge model |
+| `judge_evaluation.verdict` | string | "accept", "review", or "reject" |
+| `judge_evaluation.score` | float | Quality score 0.0-1.0 |
+| `judge_evaluation.justification` | string | Detailed evaluation explanation |
+| `judge_evaluation.suggested_corrections` | array[string] | Specific improvement suggestions |
+| `judge_evaluation.raw_judge_output` | object | Raw judge model output |
+
+**Judge Verdict Meanings**:
+
+- **accept** (score ≥ 0.8): Smells are accurate and complete, no significant issues
+- **review** (score 0.5-0.79): Mostly correct but has minor issues or omissions worth checking
+- **reject** (score < 0.5): Significant errors, wrong smells, or major omissions
+
+**Example Request (cURL)**:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/analyze_requirement_with_judge \
+  -H "Content-Type: application/json" \
+  -d '{
+    "requirement_id": "REQ-1",
+    "description": "The system should maybe provide some kind of user-friendly authentication.",
+    "activity_points": 45
+  }'
+```
+
+**Error Responses**:
+
+**400 Bad Request** - Judge not configured
+
+```json
+{
+  "detail": "LLM Judge is not available. Please set OPENROUTER_API_KEY and ensure LLM_JUDGE_ENABLED=true in your environment."
+}
+```
+
+**500 Internal Server Error** - Analysis or evaluation failed
+
+```json
+{
+  "detail": "Failed to analyze requirement with judge. Please check server logs."
+}
+```
+
+**Usage Notes**:
+
+1. **Research/Evaluation Only**: This endpoint is designed for evaluating smell detection quality, not for production use by the extension.
+2. **Performance**: Takes ~2-5 seconds longer than regular analysis due to the additional judge step.
+3. **Independence**: The judge model is completely separate from the primary model to provide unbiased evaluation.
+4. **Correlation**: Judge scores should be correlated with human expert evaluations for validation.
+
 ### 2. Get Model Information
 
 Returns information about the configured OpenAI model.
@@ -229,7 +344,45 @@ Returns information about the configured OpenAI model.
 curl http://localhost:8000/api/v1/models
 ```
 
-### 3. Health Check
+### 3. Get Judge Model Information
+
+Returns information about the configured LLM-as-Judge model on OpenRouter.
+
+**Endpoint**: `GET /api/v1/judge_model`
+
+**Response**: `200 OK`
+
+```json
+{
+  "provider": "openrouter",
+  "model": "meta-llama/llama-3.3-70b-instruct:free",
+  "configured": true,
+  "enabled": true,
+  "max_tokens": 1000,
+  "temperature": 0.2,
+  "base_url": "https://openrouter.ai/api/v1/chat/completions"
+}
+```
+
+**Example Request (cURL)**:
+
+```bash
+curl http://localhost:8000/api/v1/judge_model
+```
+
+**Fields**:
+
+| Field | Description |
+|-------|-------------|
+| `provider` | Always "openrouter" |
+| `model` | The OpenRouter model identifier |
+| `configured` | True if API key is set and judge is available |
+| `enabled` | Value of LLM_JUDGE_ENABLED setting |
+| `max_tokens` | Maximum tokens for judge responses |
+| `temperature` | Sampling temperature for judge |
+| `base_url` | OpenRouter API endpoint |
+
+### 4. Health Check
 
 Simple health check endpoint.
 
@@ -245,7 +398,7 @@ Simple health check endpoint.
 }
 ```
 
-### 4. Root / Service Info
+### 5. Root / Service Info
 
 Returns basic service information.
 
@@ -309,9 +462,12 @@ This is configured via the `CORS_ORIGINS` environment variable.
 
 ## LLM Provider Configuration
 
-The API uses OpenAI exclusively, configured via environment variables:
+The API uses two LLM providers:
 
-### OpenAI Configuration
+1. **OpenAI** - Primary smell detection model (required)
+2. **OpenRouter** - LLM-as-Judge evaluation model (optional, for research)
+
+### OpenAI Configuration (Primary Model)
 
 ```bash
 OPENAI_API_KEY=your_key_here
@@ -330,6 +486,41 @@ OPENAI_TEMPERATURE=0.1
 
 **Fine-Tuned Models**:
 For production use, train a fine-tuned model on the comprehensive smell taxonomy and set `OPENAI_MODEL` to your model ID (format: `ft:gpt-4o-mini:org:id:suffix`).
+
+### OpenRouter Configuration (LLM-as-Judge)
+
+```bash
+# OpenRouter configuration (LLM-as-judge)
+OPENROUTER_API_KEY=your_openrouter_key
+OPENROUTER_MODEL=meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1/chat/completions
+OPENROUTER_MAX_TOKENS=1000
+OPENROUTER_TEMPERATURE=0.2
+LLM_JUDGE_ENABLED=true
+```
+
+**Characteristics**:
+
+- Used only for `/analyze_requirement_with_judge` endpoint
+- Provides independent evaluation of smell detection quality
+- Recommended free models:
+  - `meta-llama/llama-3.3-70b-instruct:free`
+  - `google/gemini-flash-1.5:free`
+  - `mistralai/mistral-7b-instruct:free`
+- Get an API key at [openrouter.ai](https://openrouter.ai)
+- Browse available models at [openrouter.ai/models](https://openrouter.ai/models)
+
+**Judge vs Primary Model**:
+
+| Aspect | Primary (OpenAI) | Judge (OpenRouter) |
+|--------|------------------|-------------------|
+| Purpose | Detect requirement smells | Evaluate detection quality |
+| Used by | Extension & all API calls | Research endpoint only |
+| Required | Yes | No (optional) |
+| Endpoint | `/analyze_requirement` | `/analyze_requirement_with_judge` |
+| Cost | Pay-per-use | Free models available |
+
+**Important**: The main smell detection always uses OpenAI (`OPENAI_MODEL`). The judge is a secondary model used only by `/analyze_requirement_with_judge` for research purposes.
 
 ## Best Practices
 

@@ -4,8 +4,11 @@ Loads environment variables and validates configuration.
 """
 
 import os
+import logging
 from typing import Literal, Optional
 from pydantic_settings import BaseSettings
+
+logger = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
@@ -28,7 +31,13 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_MODEL: str = "gpt-4o-mini"  # Default to base model; override with fine-tuned model in env
     OPENAI_MAX_TOKENS: int = 1500
-    OPENAI_TEMPERATURE: float = 0.1
+    OPENAI_TEMPERATURE: float = 0.0  # Deterministic detection
+    
+    # Judge Configuration (LLM-as-Judge for evaluation)
+    JUDGE_MODEL: str = "gpt-4o"
+    JUDGE_MAX_TOKENS: int = 1000
+    JUDGE_TEMPERATURE: float = 0.0  # Deterministic evaluation
+    LLM_JUDGE_ENABLED: bool = True
     
     # Application Configuration
     LOG_LEVEL: str = "INFO"
@@ -48,6 +57,34 @@ class Settings(BaseSettings):
                 "OPENAI_API_KEY is required. "
                 "Please set OPENAI_API_KEY in your environment or .env file."
             )
+    
+    def validate_judge_config(self) -> bool:
+        """
+        Check if judge configuration is valid.
+        
+        Returns:
+            True if judge is properly configured, False otherwise
+        """
+        if not self.LLM_JUDGE_ENABLED:
+            return False
+        
+        if not self.OPENAI_API_KEY:
+            logger.warning(
+                "LLM_JUDGE_ENABLED=true but OPENAI_API_KEY is not set. "
+                "Judge functionality will be disabled."
+            )
+            return False
+        
+        return True
+    
+    def is_judge_available(self) -> bool:
+        """
+        Check if judge functionality is available.
+        
+        Returns:
+            True if judge can be used, False otherwise
+        """
+        return self.LLM_JUDGE_ENABLED and bool(self.OPENAI_API_KEY)
     
     def get_cors_origins(self) -> list[str]:
         """Parse CORS origins from comma-separated string."""

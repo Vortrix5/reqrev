@@ -1,0 +1,5 @@
+# Ignore all evaluation results
+*
+
+# Except this .gitignore file
+!.gitignore

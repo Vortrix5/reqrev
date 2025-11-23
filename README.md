@@ -93,14 +93,25 @@ reqrev/
 │
 ├── llm_service/          # LLM Integration Layer
 │   ├── iso29148_detector.py    # Facade
-│   ├── huggingface_client.py   # HuggingFace
-│   ├── openai_client.py        # OpenAI
+│   ├── openai_client.py        # OpenAI client
+│   ├── judge_client.py         # OpenRouter judge client
 │   └── models/
 │       └── requirement_smell_result.py
 │
+├── evaluation/           # Research & Evaluation Tools
+│   ├── README.md        # Evaluation guide
+│   ├── batch_evaluate.py # Batch evaluation script
+│   ├── test_judge.py    # Simple judge test
+│   ├── sample_data/     # Example datasets
+│   │   ├── requirements_sample.csv
+│   │   └── requirements_sample.json
+│   └── results/         # Generated reports (gitignored)
+│
 ├── docs/                 # Documentation
 │   ├── ARCHITECTURE.md   # System architecture
-│   └── API.md           # API documentation
+│   ├── API.md           # API documentation
+│   ├── LLM_JUDGE.md     # LLM-as-Judge guide
+│   └── JUDGE_IMPLEMENTATION.md
 │
 ├── requirements.txt      # Python dependencies
 ├── .env.example         # Environment template
@@ -417,7 +428,42 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
 
 **Detection Accuracy**: Enhanced prompts with conservative rules minimize false positives. Simple conditional requirements with clear "shall" statements (e.g., "When X, the system shall Y") won't be flagged.
 
-## 🔮 Roadmap
+## � Research & Evaluation Tools
+
+ReqRev includes a comprehensive evaluation framework for assessing model quality using **LLM-as-Judge** methodology:
+
+### Quick Start
+
+```bash
+# 1. Start the API
+python start_api.py
+
+# 2. Run batch evaluation
+cd evaluation
+python batch_evaluate.py
+
+# 3. Review results
+ls results/
+```
+
+### What's Included
+
+- **📊 Batch Evaluation**: Process multiple requirements with statistical analysis
+- **🧪 Test Scripts**: Simple test cases for quick validation
+- **📁 Sample Data**: 10 example requirements (poor → excellent quality)
+- **📈 Multiple Output Formats**: JSON, CSV, and Markdown reports
+- **🎯 Quality Metrics**: Verdict distribution, average scores, smell patterns
+
+### Output Examples
+
+Results include:
+- ✅ **Accept** (score ≥ 0.8): Primary model is accurate
+- ⚠️ **Review** (score 0.5-0.79): Minor issues detected
+- ❌ **Reject** (score < 0.5): Significant errors or omissions
+
+**See `evaluation/README.md` for complete guide.**
+
+## �🔮 Roadmap
 
 ### Completed ✅
 
@@ -430,22 +476,23 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
 - ✅ Comprehensive smell details panel with descriptions, fix suggestions, and examples
 - ✅ Enhanced detection accuracy with conservative prompts to minimize false positives
 - ✅ Complete documentation with architecture guides and API references
+- ✅ LLM-as-Judge evaluation framework with OpenRouter integration
+- ✅ Batch evaluation tools for research and model assessment
+- ✅ Comprehensive evaluation documentation and sample datasets
 
 ### In Progress 🚧
 
 - 🔄 Result caching for performance optimization
-- 🔄 Batch requirement analysis
 
 ### Planned 📋
 
 - Database layer for analysis history
 - User authentication and accounts
-- Batch requirement analysis
 - Requirements traceability matrix
 - Link requirements to GitHub issues
 - Export to PDF/Markdown
 - Custom smell definitions
-- Training feedback loop
+- Self-refinement workflow using judge feedback
 
 ## 🛠️ Technical Stack
 

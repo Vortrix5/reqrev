@@ -3,6 +3,7 @@
 ## Overview
 
 ReqRev is a comprehensive requirements analysis system consisting of two tightly integrated components:
+
 1. **Browser Extension** - A Chrome/Edge extension that adds a Requirements tab to GitHub repositories with AI-powered smell detection and detailed guidance
 2. **Backend API** - A FastAPI service that provides LLM-powered requirement smell detection using a comprehensive 36-label taxonomy based on ISO 29148 standards
 
@@ -11,22 +12,22 @@ ReqRev is a comprehensive requirements analysis system consisting of two tightly
 ```
 ┌─────────────────────────────────────────────┐
 │         Browser Extension (React)           │
-│  ┌────────────┐  ┌──────────────────────┐  │
-│  │ CRUD Panel │  │ Smell Details Panel  │  │
-│  │            │  │ • Descriptions       │  │
-│  │ • Create   │  │ • Fix suggestions    │  │
-│  │ • Edit     │  │ • Examples           │  │
-│  │ • Delete   │  │ • Color-coded badges │  │
-│  └────────────┘  └──────────────────────┘  │
-│         │                    ▲               │
-│         │ Chrome Storage API │               │
-│         ▼                    │               │
-│  ┌──────────────────────────┴───────────┐  │
-│  │   useRequirements Hook               │  │
-│  │   • State management                 │  │
-│  │   • API integration                  │  │
-│  │   • Analysis orchestration           │  │
-│  └──────────────┬───────────────────────┘  │
+│  ┌────────────┐  ┌──────────────────────┐   │
+│  │ CRUD Panel │  │ Smell Details Panel  │   │
+│  │            │  │ • Descriptions       │   │
+│  │ • Create   │  │ • Fix suggestions    │   │
+│  │ • Edit     │  │ • Examples           │   │
+│  │ • Delete   │  │ • Color-coded badges │   │
+│  └────────────┘  └──────────────────────┘   │
+│         │                   ▲              │
+│         │ Chrome Storage API│              │
+│         ▼                   │              │
+│  ┌──────────────────────────┴───────────┐   │
+│  │   useRequirements Hook               │   │
+│  │   • State management                 │   │
+│  │   • API integration                  │   │
+│  │   • Analysis orchestration           │   │
+│  └──────────────┬───────────────────────┘   │
 └─────────────────┼───────────────────────────┘
                   │ HTTPS
                   │ POST /api/v1/analyze_requirement
@@ -63,12 +64,14 @@ ReqRev is a comprehensive requirements analysis system consisting of two tightly
 **Purpose**: Provides a user interface for managing requirements within GitHub repositories.
 
 **Technology Stack**:
+
 - TypeScript
 - React for UI components
 - Chrome Extension APIs
 - Webpack for bundling
 
 **Key Features**:
+
 - Injects a "Requirements" tab into GitHub repository pages
 - Stores requirements in Chrome local storage (per repository)
 - Provides CRUD operations for requirements
@@ -78,6 +81,7 @@ ReqRev is a comprehensive requirements analysis system consisting of two tightly
 - **Professional UI**: Matches GitHub's design language and dark mode
 
 **Files**:
+
 - `manifest.json` - Extension configuration (Manifest V3)
 - `src/contentScript.tsx` - Main entry point and GitHub integration
 - `src/components/` - React UI components
@@ -98,17 +102,20 @@ ReqRev is a comprehensive requirements analysis system consisting of two tightly
 **Purpose**: Provides secure, scalable requirement analysis services.
 
 **Technology Stack**:
+
 - FastAPI (Python web framework)
 - Pydantic for data validation
 - Uvicorn ASGI server
 
 **Security Features**:
+
 - CORS configured for browser extensions only
 - No API keys exposed to client
 - Environment-based configuration
 - Input validation on all endpoints
 
 **Structure**:
+
 ```
 api/
 ├── main.py              # FastAPI application & CORS setup
@@ -120,6 +127,7 @@ api/
 ```
 
 **Key Endpoints**:
+
 - `POST /api/v1/analyze_requirement` - Analyze a requirement for smells
 - `GET /api/v1/models` - List available models
 - `GET /health` - Health check
@@ -131,6 +139,7 @@ api/
 **Design Pattern**: Facade pattern with strategy selection
 
 **Structure**:
+
 ```
 llm_service/
 ├── iso29148_detector.py      # Facade - provider selection
@@ -155,6 +164,7 @@ llm_service/
 - **Cost**: ~$0.001-0.003 per requirement analyzed
 
 **Detection Enhancements**:
+
 - Conservative rule set to reduce false positives
 - Context-aware analysis (e.g., simple "when...shall" conditionals are acceptable)
 - Detailed prompt engineering with explicit examples
@@ -285,6 +295,7 @@ All configuration is done through environment variables (`.env` file):
 ### Local Development
 
 1. **Extension**:
+
    ```bash
    cd extension/
    npm install
@@ -293,6 +304,7 @@ All configuration is done through environment variables (`.env` file):
    ```
 
 2. **API**:
+
    ```bash
    pip install -r requirements.txt
    cp .env.example .env
@@ -303,7 +315,7 @@ All configuration is done through environment variables (`.env` file):
 ### Production Considerations
 
 - **Extension**: Publish to Chrome Web Store
-- **API**: 
+- **API**:
   - Deploy to cloud (AWS, GCP, Azure)
   - Use managed secrets (AWS Secrets Manager, etc.)
   - Add rate limiting
@@ -363,18 +375,21 @@ All configuration is done through environment variables (`.env` file):
 ## Technology Choices
 
 ### Why FastAPI?
+
 - Modern, async Python framework
 - Automatic OpenAPI documentation
 - Great performance
 - Type safety with Pydantic
 
 ### Why Separate Backend?
+
 - Security: Keep API keys server-side
 - Scalability: Backend can scale independently
 - Flexibility: Swap LLM providers without extension updates
 - Cost Control: Monitor and limit LLM usage
 
 ### Why TypeScript?
+
 - Type safety for browser extension
 - Better IDE support
 - Catches errors at compile time

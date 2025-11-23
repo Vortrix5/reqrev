@@ -43,12 +43,12 @@ Your task is to analyze software requirements and detect quality issues (smells)
 - negative_formulation: Uses "must not", "shall not" where positive would be clearer
 - vague_pronoun_or_reference: Uses "it", "this", "that" without clear referent
 - subjective_language: "user-friendly", "simple", "fast", "easy" without measurable criteria
-- vague_or_implicit_terms: "normally", "usually", "as appropriate", "if possible", "etc."
-- non_verifiable_qualifier: "as soon as possible", "minimal delay", "high performance" without metrics
-- loophole_or_open_ended: "at least", "up to", "including but not limited to" with no bounds
+- vague_or_implicit_terms: "normally", "usually", "as appropriate", "if possible", "etc.", OR vague nouns lacking specificity like "functionality", "capability", "feature", "information", "data", "system", "process" used without concrete details about what/how/when
+- non_verifiable_qualifier: Vague performance terms WITHOUT any metrics: "as soon as possible", "minimal delay", "high performance", "quickly", "efficiently". DO NOT flag if specific numeric metrics are provided (e.g., "500 milliseconds", "2 seconds" are verifiable even if context could be better)
+- loophole_or_open_ended: "at least", "up to", "including but not limited to", "minimum of", "no less than" with no upper/lower bounds or clear limits. Example: "at least 1000 TPS" (no upper limit defined) → FLAG
 - superlative_or_comparative_without_reference: "best", "most", "better", "faster" with no baseline
-- quantifier_without_unit_or_range: "many", "few", "several", numbers without units
-- design_or_implementation_detail: Describes HOW (technology, pseudo-code) instead of WHAT
+- quantifier_without_unit_or_range: "many", "few", "several", numbers without units, OR overly broad/vague quantifiers like "all", "any", "every" without explicit scope boundaries (e.g., "all user data" - which data types? "all users" - which user categories?)
+- design_or_implementation_detail: Specifies HOW instead of WHAT. Flag if requirement mentions: specific technologies ("OAuth 2.0", "MySQL"), specific algorithms ("AES-256", "SHA-256"), implementation mechanisms ("database", "cache", "queue"), or technical architecture details. Requirements should state the capability/behavior needed, not the solution approach.
 - implicit_requirement: Significant behavior only implied, not explicitly stated
 
 **3. ANALYTICAL SMELLS (grammar & structure):**
@@ -64,7 +64,7 @@ Your task is to analyze software requirements and detect quality issues (smells)
 - deep_nesting_or_structure_issue: Deeply nested hierarchy affecting understanding
 
 **5. INCOMPLETENESS & LANGUAGE SMELLS:**
-- incomplete_requirement: Missing trigger, system response, actor, or essential behavior
+- incomplete_requirement: Missing essential details like WHAT specifically (e.g., "provide backup functionality" - backup what? when? how often?), WHO (actor), WHEN (trigger/conditions), or WHERE (scope/boundary). If a requirement is too vague to implement without making major assumptions, it's incomplete.
 - incomplete_reference_or_condition: References undefined things or incomplete conditions
 - missing_system_response: States condition but not what system should do
 - incorrect_or_confusing_order: Steps in confusing order
@@ -74,6 +74,54 @@ Your task is to analyze software requirements and detect quality issues (smells)
 - undefined_term: Specialized terms not defined, ambiguous in context
 - language_error_or_grammar_issue: Grammar/spelling errors affecting clarity
 - ambiguous_plurality: Unclear if applies to all, some, or one instance
+
+**DETECTION GUIDELINES:**
+
+1. **Implementation Details** (design_or_implementation_detail): 
+   - Flag if mentions: specific technology/protocol names (OAuth 2.0, AES-256), specific vendors (MySQL, AWS), implementation mechanisms (database, cache), technical architecture
+   - ALWAYS FLAG: References to databases, caches, specific algorithms, protocols by name
+   - Example: "validate against database" → flag (mentions "database" = HOW); "validate credentials" → OK (states WHAT)
+
+2. **Vague Terms** (vague_or_implicit_terms): 
+   - Generic nouns like "functionality", "capability", "feature", "information", "data", "system", "process" WITHOUT concrete specifics
+   - Flag ESPECIALLY when these terms are the main object: "provide X functionality", "have X capability"
+   - ALWAYS FLAG: "[verb] functionality/capability/feature" without explaining what specifically
+   - **CRITICAL**: Undefined operational/environmental terms like "normal load", "typical conditions", "regular usage", "standard configuration", "average load", "peak load", "normal operations"
+   - **ALWAYS CHECK**: Any requirement with performance metrics must define the operational context
+   - Example: "backup functionality" → flag (what gets backed up?); "backup user profiles daily" → OK (specific); "under normal load" → **MUST FLAG** (what is normal?); "process 1000 TPS under normal load" → **FLAG vague_or_implicit_terms** for "normal load"
+
+3. **Broad Quantifiers** (quantifier_without_unit_or_range): 
+   - "all", "any", "every", "each" used without explicit scope boundaries
+   - **CRITICAL**: Flag ONLY when BOTH conditions are met: (1) broad quantifier + (2) vague/ambiguous noun
+   - **FLAG**: "all data" (what data?), "all information" (what information?), "any records" (which records?)
+   - **DO NOT FLAG**: "all user data" when encryption/security context makes it clear (comprehensive coverage intended), "all transactions" in performance context (clear scope)
+   - Must ask: Is the scope genuinely ambiguous, or is it intentionally comprehensive?
+   - Example: "encrypt all user data" → DO NOT FLAG (comprehensive coverage is the point); "backup all data" → FLAG (which data systems/databases?)
+
+4. **Performance Without Context** (non_verifiable_qualifier): 
+   - Time/performance constraints that are truly unverifiable due to missing critical context
+   - **FLAG**: "as soon as possible", "quickly", "high performance" (no metrics at all)
+   - **FLAG**: Performance metrics without ANY context: "within 2 seconds" with NO mention of conditions, environment, or triggers
+   - **DO NOT FLAG**: "within X seconds" when the requirement already provides sufficient context through trigger conditions or environmental description
+   - Example: "When user clicks login... within 2 seconds" → DO NOT FLAG (trigger provides context); "Response time: 2 seconds" alone → FLAG (missing all context)
+
+5. **Open-Ended Bounds** (loophole_or_open_ended):
+   - **CRITICAL**: ALWAYS check for unbounded quantifiers in performance/capacity requirements
+   - **FLAG**: "at least X" (no upper bound), "up to X" (no lower bound), "minimum of X" (no maximum), "maximum of X" (no minimum) when bounds matter
+   - **ESPECIALLY FLAG**: Performance metrics with "at least" - this creates ambiguity about upper limits
+   - Example: "at least 1000 TPS" → **MUST FLAG** (what's the upper limit?); "between 1000-5000 TPS" → OK (bounded); "support a minimum of 100 users" → FLAG (what's the maximum?)
+
+6. **Missing System Response** (missing_system_response):
+   - Requirement describes error/failure conditions but not success conditions, or vice versa
+   - **CHECK**: If requirement mentions "if X fails" or "if validation fails", ensure it also describes what happens on success
+   - Example: "display error if validation fails" → CHECK: does it say what happens on success? If not, FLAG
+
+7. **Incomplete Requirements** (incomplete_requirement):
+   - Missing critical details: WHAT specifically, WHO (actor), WHEN (trigger), WHERE (scope)
+   - Too vague to implement without major assumptions
+   - Example: "provide backup" → flag (backup what? when?); "backup database nightly at 2am" → OK (complete)
+
+8. **Multiple Smells**: A single requirement can have multiple smells. Systematically check ALL categories and detect ALL that apply.
 
 **INSTRUCTIONS:**
 Analyze the requirement and return a JSON object with:
@@ -86,10 +134,22 @@ Analyze the requirement and return a JSON object with:
 - Each smell in the list must be one of the exact labels above
 - Return multiple smells if multiple issues exist
 - If no smells detected: {"smells": [], "explanation": "No quality issues detected"}
-- Be precise: Only report smells that are clearly present
+- Be thorough: Check ALL categories systematically for EVERY requirement
+- **Check for multiple smells**: A requirement can have 2-3+ smells
+
+**CRITICAL CHECKS (commonly missed):**
+- loophole_or_open_ended: **ALWAYS** scan for "at least", "up to", "minimum of", "maximum of" - these almost always indicate unbounded requirements
+- vague_or_implicit_terms: **ALWAYS** scan for undefined operational terms: "normal load", "typical conditions", "standard configuration", "average usage", "peak load"
+- **Performance requirements**: If you see performance metrics (TPS, response time, throughput), CHECK FOR BOTH:
+  1. loophole_or_open_ended: "at least X" without upper bound
+  2. vague_or_implicit_terms: "normal load" or similar undefined context
+
+**CONTEXTUAL RULES:**
 - conditional_or_non_assertive_requirement: ONLY flag if weak modals (may/might/could/should/maybe) are used, OR if complex nested if-then logic obscures the obligation. DO NOT flag simple conditional requirements with clear "shall" statements (e.g., "When X, the system shall Y" is fine).
 - non_atomic_requirement: ONLY flag if multiple DISTINCT concerns/actions that should be tested separately. A single action with multiple details is acceptable.
-- Be conservative: When in doubt, don't report the smell
+- quantifier_without_unit_or_range: Flag ONLY when scope is genuinely ambiguous. "all user data" in encryption context → DO NOT FLAG (comprehensive is intentional)
+- non_verifiable_qualifier: Context matters! "within X seconds" with a trigger/condition → DO NOT FLAG (context is implicit in the scenario)
+
 - Be specific and concise in your explanation"""
     
     def __init__(
@@ -97,7 +157,7 @@ Analyze the requirement and return a JSON object with:
         api_key: str,
         model: str = "gpt-4o-mini",
         max_tokens: int = 1000,
-        temperature: float = 0.1
+        temperature: float = 0.0  # Deterministic detection
     ):
         """
         Initialize OpenAI client.
