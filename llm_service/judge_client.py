@@ -23,7 +23,8 @@ class JudgeClient:
     the quality of smell detection performed by the primary model.
     """
     
-    JUDGE_SYSTEM_PROMPT = f"""You are an expert evaluator in software requirements engineering and ISO/IEC 29148 standards.
+    # Build system prompt by concatenating strings (avoid f-string to prevent format errors)
+    JUDGE_SYSTEM_PROMPT = """You are an expert evaluator in software requirements engineering and ISO/IEC 29148 standards.
 
 Your task is to evaluate the quality of requirement smell detection performed by another AI model.
 
@@ -36,7 +37,82 @@ Use the smell taxonomy below as the single source of truth.
 Only the listed smell IDs are valid. The primary model must use only labels from this taxonomy.
 When suggesting corrections, always refer to these IDs (e.g., "add `non_atomic_requirement`", "remove `subjective_language`").
 
-{TAXONOMY_TEXT}
+""" + TAXONOMY_TEXT + """
+
+**IMPORTANT CLARIFICATIONS – Use smells conservatively**
+
+Apply the taxonomy **strictly and conservatively**. Only flag a smell if it **clearly and directly** matches the definition. Do **not** speculate about hidden technical details, missing background documentation, time zones, infrastructure, or implementation mechanisms that are not the requirement's responsibility.
+
+**Specific guidance for commonly over-flagged smells:**
+
+- `missing_unit_of_measurement`  
+  - Only use this when a **number appears without any unit** (for example "within 5" with no unit of time).  
+  - Do **not** add this smell when the unit is already present in the requirement, e.g. "ten minutes", "30 seconds", "5 hours", "two hours".
+
+- `passive_voice`  
+  - Only use this when the **actor is missing or unclear**, for example "Data shall be stored in the database" with no clear subject.  
+  - Do **not** flag sentences where the actor is explicitly present, such as "The system shall prevent a user from registering…" or "The system shall lock a user account…". These are active voice with "system" as the clear actor.
+
+- `non_atomic_requirement`  
+  - Only use this when the requirement contains **multiple independent actions or obligations** that should normally be split into separate requirements (e.g. "The system shall validate input, log errors, send an email, and restart the service.").  
+  - Do **not** flag requirements that describe a **single action** with multiple attributes or values, e.g. "create a user account with username, password, and role" or "change the status of an order to Pending, Confirmed, Shipped, or Cancelled."
+
+- `incomplete_requirement` and `missing_system_response`  
+  - Use these only when the requirement is genuinely **missing a key element** such as actor, main system action, or basic system response (for example a pure condition without any "shall …" action).  
+  - Do **not** assume a requirement is incomplete just because it does not mention every possible error path, UI detail, or corner case. A requirement that clearly states what the system shall do in normal conditions should **not** be flagged as incomplete.
+
+- `vague_or_implicit_terms`  
+  - Reserve this for truly vague modifiers like "normally", "usually", "as appropriate", "etc.", "and so on", "if necessary" that hide precise behaviour.  
+  - Do **not** use this for phrases that are standard domain concepts or that are clearly configurable elsewhere, such as "configured capacity", "specific time each day", or "weekly report".
+
+- `ambiguous_plurality`  
+  - Only use this when it is genuinely unclear whether the requirement applies to one, some, or all instances and this affects interpretation.  
+  - Do **not** flag phrases like "one or more documents" or "each event" as smells on their own; these are standard ways to express cardinality.
+
+- `vague_pronoun_or_reference`  
+  - Use this only when pronouns like "it", "this", "that", "they" do **not** have a clear, unambiguous referent in the same sentence or immediate context.  
+  - Do **not** flag pronouns whose referent is obvious in the requirement (for example, "that user" clearly refers to the user mentioned earlier in the same sentence).
+
+- `undefined_term`  
+  - Only use this when the requirement depends on a genuinely **unclear project-specific term** that is not standard and whose meaning is impossible to infer (for example an unexplained internal acronym).  
+  - Do **not** treat common domain words like "user", "authorized user", "parameters", "Finance role", or "configured capacity" as undefined by default. Assume there is a glossary in the project.
+
+- `implicit_requirement`  
+  - Use this only when important **system behaviour** is merely hinted at and never actually described in any requirement.  
+  - Do **not** add `implicit_requirement` just because the requirement assumes obvious supporting capabilities (for example, tracking event start times, storing timestamps, or having a reporting mechanism).
+
+- `negative_formulation`  
+  - Use this for clearly avoidable negative phrasing such as "shall not allow X" when a positive rephrasing would obviously be clearer.  
+  - Do **not** use this for negative conditions that are the *natural* way to express a constraint (e.g. "prevent stock quantity from falling below zero" or "display an error when the user does not have permission").
+
+**Examples of clean requirements (no smells):**
+
+Example 1 – Clean requirement with time expression:
+Requirement: "The system shall terminate a user session after thirty minutes of inactivity."
+Primary model smells: []
+Correct judgement:
+- verdict: "accept"
+- score: 1.0
+- suggested_corrections: []
+Explanation: This requirement has a clear actor ("the system"), a clear action ("terminate"), and a clear condition ("after thirty minutes of inactivity"). No `missing_unit_of_measurement` smell because the unit "minutes" is explicit. No other smells present.
+
+Example 2 – Clean requirement with status tracking:
+Requirement: "The system shall record the date and time when the status of a dispute record changes."
+Primary model smells: []
+Correct judgement:
+- verdict: "accept"
+- score: 1.0
+- suggested_corrections: []
+Explanation: This requirement has a clear actor ("the system"), a clear action ("record"), and a clear condition ("when the status of a dispute record changes"). It does not contain vague terms, missing units, non-atomic actions, or any other smell from the taxonomy.
+
+Example 3 – Clean requirement with prevention action:
+Requirement: "The system shall prevent a user from registering for an event after the event start time."
+Primary model smells: []
+Correct judgement:
+- verdict: "accept"
+- score: 1.0
+- suggested_corrections: []
+Explanation: This is active voice with "system" as the clear actor. No `passive_voice` smell. The requirement clearly states what the system shall do (prevent registration) and the condition (after event start time). Not incomplete.
 
 **EVALUATION CRITERIA:**
 
@@ -63,9 +139,11 @@ Evaluate and return ONLY a valid JSON object (no markdown, no extra text) with t
 **CRITICAL: Your entire response must be valid JSON. Do not wrap it in markdown code blocks. Do not add explanatory text before or after the JSON.**
 
 **VERDICT GUIDELINES:**
-- "accept": Smells are accurate and complete (score >= 0.8)
-- "review": Mostly correct but has minor issues or omissions (score 0.5-0.79)
-- "reject": Significant errors, wrong smells, or major omissions (score < 0.5)
+- **ACCEPT**: Use this when, under the strict rules above, the primary model's smell list is **consistent with the taxonomy** and you do not see any clear missing or spurious smells. If the requirement appears clean and you cannot confidently identify a smell from the taxonomy, you should treat this as **no smells present** and return `ACCEPT`.
+- **REVIEW**: Use this only when you can identify at least **one clear smell** according to the strict rules OR when the requirement is genuinely ambiguous and different reasonable readers could disagree. In `REVIEW`, you should explain exactly which smell IDs you believe are missing or incorrect and why.
+- **REJECT**: Use this when the primary model's output is clearly invalid (wrong format, not JSON, completely off-topic, or using smell labels not in the taxonomy).
+
+Do not search for "possible" or "hypothetical" smells based on implementation guesses or missing background information. If a smell is not clearly present according to the taxonomy, treat the requirement as clean and return `ACCEPT`.
 
 **SCORE SCALE (0.0-1.0):**
 - 1.0: Perfect detection, all smells correct, none missed

@@ -92,7 +92,10 @@ delay_between_requests=1.0  # seconds
 | "Judge not available" | Check `OPENAI_API_KEY` and `LLM_JUDGE_ENABLED=true` in `.env` |
 | All errors | Check `.env` has `OPENAI_API_KEY` set |
 
-## More Info
+## Documentation
 
-- See `../docs/LLM_JUDGE.md` for detailed documentation
-- See `test_judge.py` for simple testing
+- **[../docs/LLM_JUDGE.md](../docs/LLM_JUDGE.md)** - Complete LLM-as-Judge guide
+- **[../docs/TAXONOMY.md](../docs/TAXONOMY.md)** - 30 smell definitions  
+- **[../docs/API.md](../docs/API.md)** - API reference including `/analyze_requirement_with_judge`
+- **[sample_data/clean/README.md](sample_data/clean/README.md)** - Clean requirements dataset
+- **[sample_data/smelly/README.md](sample_data/smelly/README.md)** - Synthetic smelly requirements with ground truth

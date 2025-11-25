@@ -176,8 +176,11 @@ export const SMELL_DISPLAY_NAMES: Record<string, string> = {
  * Get smell category information
  */
 export function getSmellInfo(smellLabel: string): SmellInfo {
-    const category = SMELL_CATEGORIES[smellLabel] || 'unknown';
-    const displayName = SMELL_DISPLAY_NAMES[smellLabel] || formatSmellLabel(smellLabel);
+    // Strip backticks in case they were included in the smell ID
+    const cleanedLabel = smellLabel.replace(/`/g, '');
+
+    const category = SMELL_CATEGORIES[cleanedLabel] || 'unknown';
+    const displayName = SMELL_DISPLAY_NAMES[cleanedLabel] || formatSmellLabel(cleanedLabel);
     const color = CATEGORY_COLORS[category];
 
     return {
@@ -192,7 +195,10 @@ export function getSmellInfo(smellLabel: string): SmellInfo {
  * Format smell label for display (fallback if not in display names)
  */
 function formatSmellLabel(smellLabel: string): string {
-    return smellLabel
+    // Strip backticks (in case LLM included them from prompt)
+    const cleaned = smellLabel.replace(/`/g, '');
+
+    return cleaned
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');

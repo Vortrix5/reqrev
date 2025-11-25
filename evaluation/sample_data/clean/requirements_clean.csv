@@ -1,0 +1,61 @@
+requirement_id,description
+B-001,"The system shall allow a logged-in user to create a new dispute record with customer identifier, dispute reason, and disputed amount."
+B-002,The system shall display a list of existing dispute records filtered by customer identifier.
+B-003,"The system shall allow an authorized user to update the status of a dispute record to Open, In Progress, Resolved, or Closed."
+B-004,The system shall prevent a user without supervisor privileges from changing the status of a dispute record to Closed.
+B-005,The system shall record the date and time when the status of a dispute record changes.
+B-006,The system shall allow an authorized user to attach one or more documents to a dispute record.
+B-007,The system shall display the full history of status changes for a dispute record in chronological order.
+B-008,"The system shall allow a user to search for dispute records by status, creation date range, and customer identifier."
+B-009,The system shall restrict access to dispute records so that a user can view only records assigned to that user or that user's team.
+B-010,"The system shall generate a daily summary listing the number of dispute records created, resolved, and closed on that day."
+B-011,"The system shall allow an authorized user to create a new event with name, start date, start time, and location."
+B-012,The system shall display all upcoming events ordered by start date and start time.
+B-013,The system shall allow a user to view detailed information for a selected event including description and organizer name.
+B-014,The system shall allow an authorized user to cancel an event and record a cancellation reason.
+B-015,The system shall send a notification to each registered participant when an event is cancelled.
+B-016,The system shall prevent a user from registering for an event after the event start time.
+B-017,The system shall allow a user to unregister from an event until two hours before the event start time.
+B-018,The system shall record the date and time when a user registers for an event.
+B-019,The system shall display the current number of registered participants for each event.
+B-020,The system shall prevent the number of registered participants for an event from exceeding the configured capacity for that event.
+B-021,"The system shall allow an administrator to create a new user account with username, initial password, and assigned role."
+B-022,The system shall require a user to change the initial password at the first successful login.
+B-023,The system shall lock a user account after five consecutive failed login attempts within ten minutes.
+B-024,The system shall unlock a locked user account only when an administrator explicitly unlocks the account.
+B-025,The system shall allow an administrator to deactivate a user account so that the user can no longer log in.
+B-026,The system shall record the date and time of the most recent successful login for each user account.
+B-027,The system shall require a user to provide the current password before setting a new password.
+B-028,The system shall terminate a user session after thirty minutes of inactivity.
+B-029,The system shall log each failed login attempt with the entered username and time of the attempt.
+B-030,The system shall allow an administrator to assign one or more predefined roles to a user account.
+B-031,The system shall prevent a customer from submitting an order that contains no line items.
+B-032,The system shall calculate the total price of an order as the sum of all line item prices and applicable taxes.
+B-033,The system shall assign a unique identifier to each new order at the time the order is created.
+B-034,The system shall allow a customer to view the current status of each order placed by that customer.
+B-035,"The system shall allow an authorized user to change the status of an order to Pending, Confirmed, Shipped, or Cancelled."
+B-036,The system shall prevent modification of order line items after the order status changes to Shipped.
+B-037,The system shall record the date and time when an order status changes to Shipped.
+B-038,The system shall allow a customer to cancel an order while the order status is Pending.
+B-039,The system shall send an order confirmation notification to the customer when an order status changes to Confirmed.
+B-040,The system shall allow an authorized user to apply a percentage discount to an order before the order is confirmed.
+B-041,"The system shall allow an authorized user to register a new product with product name, product code, and unit price."
+B-042,The system shall store the current stock quantity for each product in inventory.
+B-043,The system shall decrease the stock quantity of a product when a confirmed order includes that product.
+B-044,The system shall increase the stock quantity of a product when a stock receipt is recorded for that product.
+B-045,The system shall prevent the stock quantity of a product from falling below zero.
+B-046,The system shall allow an authorized user to set a reorder threshold quantity for each product.
+B-047,The system shall list all products whose stock quantity is less than or equal to the configured reorder threshold.
+B-048,The system shall record the date and time when a stock receipt is entered into the system.
+B-049,The system shall allow an authorized user to mark a product as inactive so that it no longer appears in new orders.
+B-050,The system shall generate a weekly inventory report listing current stock quantity for each active product.
+B-051,The system shall allow an authorized user to generate a summary report of all orders created within a selected date range.
+B-052,The system shall allow a user to export the generated report as a comma-separated values file.
+B-053,The system shall display the parameters used to generate a report at the top of the report output.
+B-054,The system shall restrict access to financial reports to users with the Finance role.
+B-055,"The system shall record the date, time, and user identifier for each report generation request."
+B-056,The system shall allow an authorized user to schedule a report to run automatically at a specific time each day.
+B-057,The system shall store the ten most recent completed report files for each scheduled report definition.
+B-058,The system shall allow an authorized user to deactivate a scheduled report so that it is no longer executed.
+B-059,The system shall display an error message if a user attempts to access a report for which that user does not have permission.
+B-060,The system shall generate an audit log entry each time a user exports a report file.

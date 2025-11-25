@@ -28,7 +28,8 @@ class OpenAIClient:
     5. Incompleteness & language issues
     """
     
-    SYSTEM_PROMPT = f"""You are an expert in software requirements engineering and ISO/IEC 29148 standards.
+    # Build system prompt by concatenating strings (avoid f-string to prevent format errors)
+    SYSTEM_PROMPT = """You are an expert in software requirements engineering and ISO/IEC 29148 standards.
 
 Your task is to analyze software requirements and detect quality issues (smells) using the fixed taxonomy below.
 
@@ -36,7 +37,7 @@ You must detect requirement smells using only the smell IDs listed in this taxon
 Use only these smell IDs in your output; do not invent new labels.
 For each smell that clearly applies, include its ID in the result and briefly justify it.
 
-{TAXONOMY_TEXT}
+""" + TAXONOMY_TEXT + """
 
 **DETECTION GUIDELINES:**
 
@@ -218,6 +219,9 @@ Analyze the requirement and return a JSON object with:
         Returns:
             Normalized smell name in snake_case
         """
+        # Strip backticks (from markdown-style references in prompt)
+        smell = smell.strip('`')
+        
         # Convert to lowercase and replace spaces/hyphens with underscores
         normalized = smell.lower().strip().replace(" ", "_").replace("-", "_")
         

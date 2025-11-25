@@ -42,7 +42,7 @@ OPENAI_API_KEY=sk-proj-...
 # Primary Model Configuration
 OPENAI_MODEL=gpt-4o-mini
 OPENAI_MAX_TOKENS=1500
-OPENAI_TEMPERATURE=0.0  # 0.0 for deterministic evaluation (recommended)
+OPENAI_TEMPERATURE=0.0  # 0.0 for deterministic detection (recommended)
 
 # Judge Configuration
 JUDGE_MODEL=gpt-4o
@@ -50,6 +50,8 @@ JUDGE_MAX_TOKENS=1000
 JUDGE_TEMPERATURE=0.0  # 0.0 for deterministic evaluation (recommended)
 LLM_JUDGE_ENABLED=true
 ```
+
+**Note**: Both models use the same OpenAI API key. The judge model is typically a more powerful model (e.g., gpt-4o) evaluating a faster/cheaper primary model (e.g., gpt-4o-mini).
 
 ### Recommended Model Combinations
 
@@ -163,7 +165,8 @@ Specific, actionable feedback like:
 
 1. Verify `OPENAI_API_KEY` is set in `.env`
 2. Check `LLM_JUDGE_ENABLED=true`
-3. Restart API server
+3. Verify `JUDGE_MODEL` is set (e.g., `gpt-4o`)
+4. Restart API server
 
 ### Low Judge Scores
 
@@ -184,12 +187,14 @@ If judge consistently gives low scores:
 ### 1. Use Temperature=0.0 for Deterministic Evaluation
 
 **CRITICAL**: Set both `OPENAI_TEMPERATURE=0.0` and `JUDGE_TEMPERATURE=0.0` to ensure:
+
 - ✅ Same requirement → same smells detected (reproducible results)
 - ✅ Consistent judge scores across multiple runs
 - ✅ Reliable evaluation metrics for prompt engineering
 - ✅ No random variation in batch evaluations
 
 **Why this matters**: Even small temperatures (0.1, 0.2) introduce randomness that causes:
+
 - Different smells detected on identical requirements
 - Inconsistent judge verdicts (Accept vs Review)
 - Unreliable evaluation metrics
@@ -251,9 +256,10 @@ Compare different models objectively using judge scores as a metric.
 
 ## Related Documentation
 
-- **API Documentation**: See `docs/API.md`
-- **Architecture**: See `docs/ARCHITECTURE.md`
-- **Evaluation Tools**: See `evaluation/README.md`
+- **Smell Taxonomy**: See [TAXONOMY.md](TAXONOMY.md) - Complete list of 30 smells
+- **API Documentation**: See [API.md](API.md) - API endpoints including judge endpoint
+- **Architecture**: See [ARCHITECTURE.md](ARCHITECTURE.md) - System design and data flow
+- **Evaluation Tools**: See [../evaluation/README.md](../evaluation/README.md) - Batch evaluation guide
 
 ## Additional Resources
 
@@ -263,4 +269,4 @@ Compare different models objectively using judge scores as a metric.
 ---
 
 **Last Updated**: November 2025  
-**Status**: ✅ OpenAI-only (OpenRouter removed)
+**Status**: ✅ OpenAI-only (simplified configuration)

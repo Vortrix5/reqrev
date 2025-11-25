@@ -374,58 +374,17 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
 }
 ```
 
-### Requirement Smells Detected (30 Labels Across 5 Categories)
+### Requirement Smells Detected
 
-For the complete taxonomy with definitions, see [TAXONOMY.md](TAXONOMY.md).
+The system detects **30 requirement smells across 5 categories**:
 
-**🟣 Morphological (5 smells)**: Shape and readability issues
+- 🟣 **Morphological** (5): Shape and readability issues
+- 🟠 **Lexical** (11): Word choice and vague terms
+- 🔵 **Analytical** (5): Grammar and structure
+- 🟢 **Relational** (3): Dependencies and coupling
+- 🔴 **Incompleteness & Language** (10): Missing information and errors
 
-- `too_long_sentence` - Spans >30-40 tokens with multiple "and/or" chains
-- `too_short_sentence` - Very short fragment missing context
-- `unreadable_structure` - Complex syntax, heavy nesting
-- `punctuation_issue` - Excessive or missing punctuation
-- `acronym_overuse_or_abbrev` - Heavy acronyms without introduction
-
-**🟠 Lexical (11 smells)**: Word choice and vague terms
-
-- `non_atomic_requirement` - Multiple actions combined, should be split
-- `negative_formulation` - Uses "shall not" where positive is clearer
-- `vague_pronoun_or_reference` - Uses "it"/"this" without clear referent
-- `subjective_language` - "user-friendly", "fast" without criteria
-- `vague_or_implicit_terms` - "normally", "usually", "etc."
-- `non_verifiable_qualifier` - "as soon as possible" without metrics
-- `loophole_or_open_ended` - "at least" with no bounds
-- `superlative_or_comparative_without_reference` - "faster" with no baseline
-- `quantifier_without_unit_or_range` - "many", numbers without units
-- `design_or_implementation_detail` - Describes HOW instead of WHAT
-- `implicit_requirement` - Behavior only implied, not explicit
-
-**🔵 Analytical (5 smells)**: Grammar and structure
-
-- `overuse_imperative_form` - Long list of commands without conditions
-- `missing_imperative_verb` - No clear action verb
-- `conditional_or_non_assertive_requirement` - Weak modals ("may", "maybe") or excessive "if...then"
-- `passive_voice` - Unclear who performs action
-- `domain_term_imbalance` - Too much jargon or missing domain terms
-
-**🟢 Relational (3 smells)**: Dependencies and coupling
-
-- `too_many_dependencies_or_versions` - References many requirements
-- `excessive_or_insufficient_coupling` - Overly entangled or floating
-- `deep_nesting_or_structure_issue` - Deeply nested hierarchy
-
-**🔴 Incompleteness & Language (10 smells)**: Missing information and errors
-
-- `incomplete_requirement` - Missing trigger, actor, response
-- `incomplete_reference_or_condition` - References undefined things
-- `missing_system_response` - States condition but not action
-- `incorrect_or_confusing_order` - Steps in confusing order
-- `missing_unit_of_measurement` - Numeric values without units
-- `partial_content_or_incomplete_enumeration` - Uses "etc."
-- `embedded_rationale_or_justification` - Mixes "why" into "what"
-- `undefined_term` - Specialized terms not defined
-- `language_error_or_grammar_issue` - Grammar/spelling errors
-- `ambiguous_plurality` - Unclear if applies to all or some
+**For complete taxonomy with definitions and examples**, see [docs/TAXONOMY.md](docs/TAXONOMY.md).
 
 **Detection Accuracy**: Enhanced prompts with conservative rules minimize false positives. Simple conditional requirements with clear "shall" statements (e.g., "When X, the system shall Y") won't be flagged.
 
@@ -433,36 +392,17 @@ For the complete taxonomy with definitions, see [TAXONOMY.md](TAXONOMY.md).
 
 ReqRev includes a comprehensive evaluation framework for assessing model quality using **LLM-as-Judge** methodology:
 
-### Quick Start
+**Quick Start**:
 
 ```bash
-# 1. Start the API
-python start_api.py
-
-# 2. Run batch evaluation
-cd evaluation
-python batch_evaluate.py
-
-# 3. Review results
-ls results/
+python start_api.py              # Start API
+cd evaluation && python batch_evaluate.py  # Run evaluation
 ```
 
-### What's Included
+**Documentation**:
 
-- **📊 Batch Evaluation**: Process multiple requirements with statistical analysis
-- **🧪 Test Scripts**: Simple test cases for quick validation
-- **📁 Sample Data**: 10 example requirements (poor → excellent quality)
-- **📈 Multiple Output Formats**: JSON, CSV, and Markdown reports
-- **🎯 Quality Metrics**: Verdict distribution, average scores, smell patterns
-
-### Output Examples
-
-Results include:
-- ✅ **Accept** (score ≥ 0.8): Primary model is accurate
-- ⚠️ **Review** (score 0.5-0.79): Minor issues detected
-- ❌ **Reject** (score < 0.5): Significant errors or omissions
-
-**See `evaluation/README.md` for complete guide.**
+- [evaluation/README.md](evaluation/README.md) - Complete evaluation guide with sample data
+- [docs/LLM_JUDGE.md](docs/LLM_JUDGE.md) - LLM-as-Judge methodology and configuration
 
 ## �🔮 Roadmap
 

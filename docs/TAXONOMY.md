@@ -107,6 +107,15 @@ Missing critical details and language/grammar problems.
 
 ---
 
+## See Also
+
+- **[API.md](API.md)** - API endpoints using this taxonomy
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - How the taxonomy is implemented in the system
+- **[LLM_JUDGE.md](LLM_JUDGE.md)** - Evaluating smell detection quality
+- **[../evaluation/README.md](../evaluation/README.md)** - Batch evaluation tools
+- **[../evaluation/sample_data/clean/README.md](../evaluation/sample_data/clean/README.md)** - Clean requirements dataset
+- **[../evaluation/sample_data/smelly/README.md](../evaluation/sample_data/smelly/README.md)** - Synthetic smelly requirements with ground truth
+
 ## References
 
 - **SLR Source**: Alemneh & Berhanu (2024), "Software Requirement Smells and Detection Techniques: A Systematic Literature Review"

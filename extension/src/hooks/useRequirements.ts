@@ -82,11 +82,14 @@ export const useRequirements = (repoId: string) => {
             const result = await analyzeRequirement(req.id, req.description);
 
             if (result) {
+                // Clean smell IDs (strip backticks in case they were included from prompt)
+                const cleanedSmells = result.smells.map(smell => smell.replace(/`/g, ''));
+
                 // Update requirement with smells using state updater to avoid stale closure
                 setRequirements(currentReqs => {
                     const updatedReqs = currentReqs.map(r =>
                         r.id === req.id
-                            ? { ...r, flags: result.smells, updatedAt: new Date().toISOString() }
+                            ? { ...r, flags: cleanedSmells, updatedAt: new Date().toISOString() }
                             : r
                     );
                     // Save to storage

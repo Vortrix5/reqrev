@@ -1,5 +1,12 @@
 # ReqRev Architecture
 
+**Related Documentation:**
+
+- **[API.md](API.md)** - API endpoints and usage
+- **[TAXONOMY.md](TAXONOMY.md)** - Complete smell taxonomy (30 smells)
+- **[LLM_JUDGE.md](LLM_JUDGE.md)** - LLM-as-Judge evaluation
+- **[../evaluation/README.md](../evaluation/README.md)** - Batch evaluation tools
+
 ## Overview
 
 ReqRev is a comprehensive requirements analysis system consisting of two tightly integrated components:
@@ -152,16 +159,11 @@ llm_service/
 **Primary Provider**: **OpenAI**
 
 - **Model**: GPT-4o-mini (default, configurable to fine-tuned models)
-- **Taxonomy**: Comprehensive 36-smell detection across 5 categories
-- **Categories**:
-  - 🟣 Morphological (5): Shape and readability
-  - 🟠 Lexical (11): Word choice and vague terms
-  - 🔵 Analytical (5): Grammar and structure
-  - 🟢 Relational (3): Dependencies and coupling
-  - 🔴 Incompleteness (12): Missing information and errors
+- **Taxonomy**: Comprehensive 30-smell detection across 5 categories (see [TAXONOMY.md](TAXONOMY.md))
 - **Output**: Structured JSON with smell labels and explanations
 - **Accuracy**: Enhanced prompts with conservative detection rules to minimize false positives
 - **Cost**: ~$0.001-0.003 per requirement analyzed
+- **Judge Model**: Optional OpenAI model for research evaluation (see [LLM_JUDGE.md](LLM_JUDGE.md))
 
 **Detection Enhancements**:
 
