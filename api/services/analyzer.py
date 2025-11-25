@@ -20,8 +20,7 @@ logger = logging.getLogger(__name__)
 
 async def analyze_requirement(
     requirement_id: str,
-    description: str,
-    activity_points: Optional[int] = None
+    description: str
 ) -> RequirementSmellResult:
     """
     Analyze a requirement for quality smells.
@@ -32,7 +31,6 @@ async def analyze_requirement(
     Args:
         requirement_id: Unique identifier for the requirement
         description: The requirement text to analyze
-        activity_points: Optional activity score (not currently used in analysis)
         
     Returns:
         RequirementSmellResult with detected smells and explanation
@@ -82,8 +80,7 @@ async def analyze_requirement(
 
 async def analyze_requirement_with_judge(
     requirement_id: str,
-    description: str,
-    activity_points: Optional[int] = None
+    description: str
 ) -> RequirementAnalysisWithJudgeResult:
     """
     Analyze a requirement and evaluate the results using LLM-as-Judge.
@@ -95,7 +92,6 @@ async def analyze_requirement_with_judge(
     Args:
         requirement_id: Unique identifier for the requirement
         description: The requirement text to analyze
-        activity_points: Optional activity score (not currently used in analysis)
         
     Returns:
         RequirementAnalysisWithJudgeResult with base analysis + judge evaluation
@@ -114,7 +110,7 @@ async def analyze_requirement_with_judge(
     logger.info(f"Analyzing requirement {requirement_id} with judge evaluation")
     
     # Step 1: Perform base analysis with primary model
-    base_result = await analyze_requirement(requirement_id, description, activity_points)
+    base_result = await analyze_requirement(requirement_id, description)
     
     # Step 2: Evaluate the analysis with judge model
     try:
@@ -170,22 +166,22 @@ async def analyze_requirement_with_judge(
 
 
 async def batch_analyze_requirements(
-    requirements: list[tuple[str, str, Optional[int]]]
+    requirements: list[tuple[str, str]]
 ) -> dict[str, RequirementSmellResult]:
     """
     Analyze multiple requirements in batch.
     
     Args:
-        requirements: List of (requirement_id, description, activity_points) tuples
+        requirements: List of (requirement_id, description) tuples
         
     Returns:
         Dictionary mapping requirement_id to RequirementSmellResult
     """
     results = {}
     
-    for req_id, description, activity_points in requirements:
+    for req_id, description in requirements:
         try:
-            result = await analyze_requirement(req_id, description, activity_points)
+            result = await analyze_requirement(req_id, description)
             results[req_id] = result
         except Exception as e:
             logger.error(f"Failed to analyze {req_id}: {str(e)}")

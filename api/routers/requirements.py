@@ -21,15 +21,13 @@ class AnalyzeRequirementRequest(BaseModel):
     """Request model for requirement analysis."""
     requirement_id: str = Field(..., description="Unique requirement identifier (e.g., REQ-1)")
     description: str = Field(..., min_length=1, description="The requirement text to analyze")
-    activity_points: Optional[int] = Field(None, ge=0, le=100, description="Optional activity score")
     
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
                     "requirement_id": "REQ-1",
-                    "description": "The system shall provide secure user authentication using OAuth 2.0 or similar industry-standard protocols.",
-                    "activity_points": 85
+                    "description": "The system shall provide secure user authentication using OAuth 2.0 or similar industry-standard protocols."
                 }
             ]
         }
@@ -92,8 +90,7 @@ async def analyze_requirement_endpoint(request: AnalyzeRequirementRequest) -> An
         # Call the analyzer service
         result = await analyze_requirement(
             requirement_id=request.requirement_id,
-            description=request.description,
-            activity_points=request.activity_points
+            description=request.description
         )
         
         logger.info(f"Analysis complete for {request.requirement_id}: {len(result.smells)} smells detected")
@@ -162,8 +159,7 @@ async def analyze_requirement_with_judge_endpoint(request: AnalyzeRequirementReq
         # Call the analyzer service with judge
         result = await analyze_requirement_with_judge(
             requirement_id=request.requirement_id,
-            description=request.description,
-            activity_points=request.activity_points
+            description=request.description
         )
         
         logger.info(

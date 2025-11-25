@@ -79,7 +79,7 @@ export const useRequirements = (repoId: string) => {
         setAnalyzingIds(prev => new Set(prev).add(req.id));
 
         try {
-            const result = await analyzeRequirement(req.id, req.description, req.activityPoints);
+            const result = await analyzeRequirement(req.id, req.description);
 
             if (result) {
                 // Update requirement with smells using state updater to avoid stale closure

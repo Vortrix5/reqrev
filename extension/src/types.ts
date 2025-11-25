@@ -6,7 +6,6 @@
 export interface Requirement {
     id: string;              // Format: REQ-1, REQ-2, etc.
     description: string;     // Detailed description
-    activityPoints?: number; // LLM evaluation score (0-100), optional for backward compatibility
     flags?: string[];        // Array of flag types from LLM evaluation
     createdAt: string;       // ISO timestamp
     updatedAt: string;       // ISO timestamp

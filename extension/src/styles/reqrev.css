@@ -229,11 +229,6 @@
   min-width: 300px;
 }
 
-.reqrev-th-activity {
-  width: 140px;
-  text-align: center;
-}
-
 .reqrev-th-flags {
   width: 140px;
   text-align: center;
@@ -290,17 +285,6 @@
   color: #c9d1d9;
   line-height: 1.6;
   display: block;
-}
-
-.reqrev-td-activity {
-  vertical-align: middle;
-  text-align: center;
-}
-
-.reqrev-activity-placeholder {
-  font-size: 14px;
-  color: #6e7681;
-  font-weight: 500;
 }
 
 .reqrev-td-flags {

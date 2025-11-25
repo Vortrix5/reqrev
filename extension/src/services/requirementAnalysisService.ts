@@ -23,8 +23,7 @@ export interface AnalysisError {
  */
 export async function analyzeRequirement(
     requirementId: string,
-    description: string,
-    activityPoints?: number
+    description: string
 ): Promise<AnalysisResult | null> {
     if (!description || description.trim().length === 0) {
         console.warn('[ReqRev] Cannot analyze empty requirement');
@@ -40,7 +39,6 @@ export async function analyzeRequirement(
             data: {
                 requirement_id: requirementId,
                 description: description.trim(),
-                activity_points: activityPoints,
             },
         });
 
@@ -64,13 +62,13 @@ export async function analyzeRequirement(
  * Batch analyze multiple requirements
  */
 export async function analyzeRequirements(
-    requirements: Array<{ id: string; description: string; activityPoints?: number }>
+    requirements: Array<{ id: string; description: string }>
 ): Promise<Map<string, string[]>> {
     const results = new Map<string, string[]>();
 
     // Analyze sequentially to avoid overwhelming the API
     for (const req of requirements) {
-        const result = await analyzeRequirement(req.id, req.description, req.activityPoints);
+        const result = await analyzeRequirement(req.id, req.description);
         if (result) {
             results.set(req.id, result.smells);
         } else {

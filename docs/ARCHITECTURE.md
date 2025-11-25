@@ -186,8 +186,7 @@ llm_service/
    └─> Extension sends POST to /api/v1/analyze_requirement
        {
          "requirement_id": "REQ-123",
-         "description": "The system shall maybe be encrypted...",
-         "activity_points": 85
+         "description": "The system shall maybe be encrypted..."
        }
 
 3. API Backend receives request

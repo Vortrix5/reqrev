@@ -29,7 +29,6 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
                     <tr>
                         <th className="reqrev-th-id">ID</th>
                         <th className="reqrev-th-description">Description</th>
-                        <th className="reqrev-th-activity">Activity Points</th>
                         <th className="reqrev-th-smells">Smells Detected</th>
                         <th className="reqrev-th-details">Analysis</th>
                         <th className="reqrev-th-actions">Actions</th>

@@ -31,8 +31,7 @@ Content-Type: application/json
 ```json
 {
   "requirement_id": "string",
-  "description": "string",
-  "activity_points": 85  // optional, integer 0-100
+  "description": "string"
 }
 ```
 
@@ -42,7 +41,6 @@ Content-Type: application/json
 |-------|------|----------|-------------|
 | `requirement_id` | string | Yes | Unique identifier for the requirement (e.g., "REQ-1") |
 | `description` | string | Yes | The requirement text to analyze (min 1 character) |
-| `activity_points` | integer | No | Activity score from 0-100 (currently not used in analysis) |
 
 **Response**: `200 OK`
 
@@ -153,8 +151,7 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
   -H "Content-Type: application/json" \
   -d '{
     "requirement_id": "REQ-1",
-    "description": "The system should maybe provide some kind of user-friendly authentication.",
-    "activity_points": 45
+    "description": "The system should maybe provide some kind of user-friendly authentication."
   }'
 ```
 
@@ -196,8 +193,7 @@ const response = await fetch('http://localhost:8000/api/v1/analyze_requirement',
   },
   body: JSON.stringify({
     requirement_id: 'REQ-1',
-    description: 'The system shall authenticate users using OAuth 2.0.',
-    activity_points: 90
+    description: 'The system shall authenticate users using OAuth 2.0.'
   })
 });
 
@@ -224,8 +220,7 @@ Content-Type: application/json
 ```json
 {
   "requirement_id": "string",
-  "description": "string",
-  "activity_points": 85  // optional, integer 0-100
+  "description": "string"
 }
 ```
 
@@ -290,8 +285,7 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement_with_judge \
   -H "Content-Type: application/json" \
   -d '{
     "requirement_id": "REQ-1",
-    "description": "The system should maybe provide some kind of user-friendly authentication.",
-    "activity_points": 45
+    "description": "The system should maybe provide some kind of user-friendly authentication."
   }'
 ```
 
@@ -564,8 +558,7 @@ async function analyzeRequirement(req: Requirement): Promise<AnalysisResult> {
       },
       body: JSON.stringify({
         requirement_id: req.id,
-        description: req.description,
-        activity_points: req.activityPoints
+        description: req.description
       })
     });
 

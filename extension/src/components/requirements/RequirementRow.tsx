@@ -32,11 +32,6 @@ export const RequirementRow: React.FC<RequirementRowProps> = ({
             <td className="reqrev-td-description">
                 <span className="reqrev-requirement-description">{requirement.description}</span>
             </td>
-            <td className="reqrev-td-activity">
-                <span className="reqrev-activity-placeholder">
-                    {requirement.activityPoints !== undefined ? requirement.activityPoints : '-'}
-                </span>
-            </td>
             <td className="reqrev-td-smells">
                 <SmellCountBadge count={smellCount} isAnalyzing={isAnalyzing} />
             </td>

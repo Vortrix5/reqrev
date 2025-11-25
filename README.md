@@ -358,8 +358,7 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
   -H "Content-Type: application/json" \
   -d '{
     "requirement_id": "REQ-1",
-    "description": "The system should maybe provide some user-friendly features.",
-    "activity_points": 45
+    "description": "The system should maybe provide some user-friendly features."
   }'
 ```
 

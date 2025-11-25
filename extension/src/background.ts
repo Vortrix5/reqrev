@@ -8,7 +8,6 @@ import { API_BASE_URL } from './constants';
 interface AnalysisRequest {
     requirement_id: string;
     description: string;
-    activity_points?: number;
 }
 
 interface AnalysisResult {
@@ -40,7 +39,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  * Handle requirement analysis request
  */
 async function handleAnalyzeRequirement(data: AnalysisRequest): Promise<AnalysisResult | null> {
-    const { requirement_id, description, activity_points } = data;
+    const { requirement_id, description } = data;
 
     if (!description || description.trim().length === 0) {
         console.warn('[ReqRev Background] Cannot analyze empty requirement');
@@ -58,7 +57,6 @@ async function handleAnalyzeRequirement(data: AnalysisRequest): Promise<Analysis
             body: JSON.stringify({
                 requirement_id,
                 description: description.trim(),
-                activity_points,
             }),
         });
 
