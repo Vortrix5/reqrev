@@ -81,7 +81,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Intended Smells**:
 - `subjective_language` - "feel confident and happy" are emotional states
 - `non_verifiable_qualifier` - Cannot objectively verify emotional responses
-- Possibly `not_implementable_requirement` - System cannot control user feelings
+- Possibly `incomplete_requirement` - System cannot control user feelings (requirement is unimplementable as stated)
 
 ---
 
@@ -166,7 +166,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Text**: "The system shall authenticate the user and display the dashboard and send a welcome email after login."
 
 **Intended Smells**:
-- `multiple_requirements_in_one` / `non_atomic_requirement` - Three distinct actions in one requirement
+- `non_atomic_requirement` - Three distinct actions in one requirement
 
 ---
 
@@ -174,7 +174,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Text**: "The report screen shall show the chart, export to PDF, update live data, and allow admins to add new metrics."
 
 **Intended Smells**:
-- `multiple_requirements_in_one` - Four separate functional requirements combined
+- `non_atomic_requirement` - Four separate functional requirements combined
 
 ---
 
@@ -182,7 +182,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Text**: "The system shall back up the database every night and restore it automatically if anything goes wrong."
 
 **Intended Smells**:
-- `multiple_requirements_in_one` - Backup + restore are separate requirements
+- `non_atomic_requirement` - Backup + restore are separate requirements
 - `vague_or_implicit_terms` - "anything goes wrong" is undefined
 
 ---
@@ -191,7 +191,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Text**: "The app must track the user's location and battery usage while providing accurate recommendations."
 
 **Intended Smells**:
-- `multiple_requirements_in_one` - Three different responsibilities combined
+- `non_atomic_requirement` - Three different responsibilities combined
 
 ---
 
@@ -199,7 +199,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Text**: "The payment module shall calculate taxes correctly and be very fast and be easy to maintain."
 
 **Intended Smells**:
-- `multiple_requirements_in_one` - Functional + performance + maintainability combined
+- `non_atomic_requirement` - Functional + performance + maintainability combined
 - `subjective_language` / `non_verifiable_qualifier` - "very fast" and "easy to maintain"
 
 ---
@@ -229,7 +229,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 
 **Intended Smells**:
 - `vague_or_implicit_terms` - "important events" lacks definition
-- `open_ended_requirement` / `etcetera_usage` - "etc." leaves requirement incomplete
+- `partial_content_or_incomplete_enumeration` - "etc." leaves requirement incomplete
 
 ---
 
@@ -237,7 +237,7 @@ This dataset contains 36 synthetic requirements designed to evaluate requirement
 **Text**: "Customer information shall be stored in the Client Table while the customer data is processed in the User module."
 
 **Intended Smells**:
-- `inconsistent_terminology` - Customer / Client / User used interchangeably
+- `undefined_term` - Customer / Client / User used interchangeably without clear definitions
 - Potential semantic inconsistency
 
 ---

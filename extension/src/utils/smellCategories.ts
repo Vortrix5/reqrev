@@ -25,19 +25,67 @@ export const CATEGORY_COLORS: Record<SmellCategory, string> = {
 };
 
 /**
+ * Flat list of all valid smell IDs (matches FLAT_SMELL_LABELS in Python backend)
+ * This is the single source of truth for smell labels in the frontend.
+ */
+export const FLAT_SMELL_LABELS = [
+    // Morphological
+    "too_long_sentence",
+    "too_short_sentence",
+    "unreadable_structure",
+    "punctuation_issue",
+    "acronym_overuse_or_abbrev",
+
+    // Lexical
+    "non_atomic_requirement",
+    "negative_formulation",
+    "vague_pronoun_or_reference",
+    "subjective_language",
+    "vague_or_implicit_terms",
+    "non_verifiable_qualifier",
+    "loophole_or_open_ended",
+    "superlative_or_comparative_without_reference",
+    "quantifier_without_unit_or_range",
+    "design_or_implementation_detail",
+    "implicit_requirement",
+
+    // Analytical
+    "overuse_imperative_form",
+    "missing_imperative_verb",
+    "conditional_or_non_assertive_requirement",
+    "passive_voice",
+    "domain_term_imbalance",
+
+    // Relational
+    "too_many_dependencies_or_versions",
+    "excessive_or_insufficient_coupling",
+    "deep_nesting_or_structure_issue",
+
+    // Incompleteness & language
+    "incomplete_requirement",
+    "incomplete_reference_or_condition",
+    "missing_system_response",
+    "incorrect_or_confusing_order",
+    "missing_unit_of_measurement",
+    "partial_content_or_incomplete_enumeration",
+    "embedded_rationale_or_justification",
+    "undefined_term",
+    "language_error_or_grammar_issue",
+    "ambiguous_plurality",
+] as const;
+
+/**
  * Map of all smell labels to their categories
  */
 export const SMELL_CATEGORIES: Record<string, SmellCategory> = {
-    // Morphological smells (7)
+    // Morphological (5 smells)
     'too_long_sentence': 'morphological',
     'too_short_sentence': 'morphological',
-    'too_long_paragraph': 'morphological',
-    'too_short_paragraph': 'morphological',
     'unreadable_structure': 'morphological',
     'punctuation_issue': 'morphological',
     'acronym_overuse_or_abbrev': 'morphological',
 
-    // Lexical smells (11)
+    // Lexical (11 smells)
     'non_atomic_requirement': 'lexical',
     'negative_formulation': 'lexical',
     'vague_pronoun_or_reference': 'lexical',
@@ -50,19 +98,19 @@ export const SMELL_CATEGORIES: Record<string, SmellCategory> = {
     'design_or_implementation_detail': 'lexical',
     'implicit_requirement': 'lexical',
 
-    // Analytical smells (5)
+    // Analytical (5 smells)
     'overuse_imperative_form': 'analytical',
     'missing_imperative_verb': 'analytical',
     'conditional_or_non_assertive_requirement': 'analytical',
     'passive_voice': 'analytical',
     'domain_term_imbalance': 'analytical',
 
-    // Relational smells (3)
+    // Relational (3 smells)
     'too_many_dependencies_or_versions': 'relational',
     'excessive_or_insufficient_coupling': 'relational',
     'deep_nesting_or_structure_issue': 'relational',
 
-    // Incompleteness smells (10)
+    // Incompleteness & language (10 smells)
     'incomplete_requirement': 'incompleteness',
     'incomplete_reference_or_condition': 'incompleteness',
     'missing_system_response': 'incompleteness',
@@ -79,14 +127,14 @@ export const SMELL_CATEGORIES: Record<string, SmellCategory> = {
  * Human-readable labels for display
  */
 export const SMELL_DISPLAY_NAMES: Record<string, string> = {
+    // Morphological
     'too_long_sentence': 'Too Long',
     'too_short_sentence': 'Too Short',
-    'too_long_paragraph': 'Long Paragraph',
-    'too_short_paragraph': 'Short Paragraph',
     'unreadable_structure': 'Unreadable',
     'punctuation_issue': 'Punctuation',
     'acronym_overuse_or_abbrev': 'Acronym Heavy',
 
+    // Lexical
     'non_atomic_requirement': 'Non-Atomic',
     'negative_formulation': 'Negative Form',
     'vague_pronoun_or_reference': 'Vague Pronoun',
@@ -99,16 +147,19 @@ export const SMELL_DISPLAY_NAMES: Record<string, string> = {
     'design_or_implementation_detail': 'Implementation Detail',
     'implicit_requirement': 'Implicit',
 
+    // Analytical
     'overuse_imperative_form': 'Too Imperative',
     'missing_imperative_verb': 'Missing Verb',
     'conditional_or_non_assertive_requirement': 'Conditional',
     'passive_voice': 'Passive Voice',
     'domain_term_imbalance': 'Domain Imbalance',
 
+    // Relational
     'too_many_dependencies_or_versions': 'Too Many Deps',
     'excessive_or_insufficient_coupling': 'Coupling Issue',
     'deep_nesting_or_structure_issue': 'Nesting Issue',
 
+    // Incompleteness & language
     'incomplete_requirement': 'Incomplete',
     'incomplete_reference_or_condition': 'Incomplete Ref',
     'missing_system_response': 'No Response',

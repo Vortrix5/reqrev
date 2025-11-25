@@ -374,7 +374,9 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
 }
 ```
 
-### Requirement Smells Detected (36 Labels Across 5 Categories)
+### Requirement Smells Detected (30 Labels Across 5 Categories)
+
+For the complete taxonomy with definitions, see [TAXONOMY.md](TAXONOMY.md).
 
 **🟣 Morphological (5 smells)**: Shape and readability issues
 
@@ -412,7 +414,7 @@ curl -X POST http://localhost:8000/api/v1/analyze_requirement \
 - `excessive_or_insufficient_coupling` - Overly entangled or floating
 - `deep_nesting_or_structure_issue` - Deeply nested hierarchy
 
-**🔴 Incompleteness (12 smells)**: Missing information and errors
+**🔴 Incompleteness & Language (10 smells)**: Missing information and errors
 
 - `incomplete_requirement` - Missing trigger, actor, response
 - `incomplete_reference_or_condition` - References undefined things

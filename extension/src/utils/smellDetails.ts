@@ -2,7 +2,8 @@
  * Comprehensive smell descriptions and fix suggestions
  * Provides detailed information about each requirement smell and how to fix it
  * 
- * ALL SMELL LABELS MATCH THE BACKEND TAXONOMY from llm_service/openai_client.py
+ * ALL SMELL LABELS MATCH THE BACKEND TAXONOMY from llm_service/smell_taxonomy.py
+ * This uses the flat list of 30 smell IDs organized into 5 categories.
  */
 
 import { SMELL_DISPLAY_NAMES, SmellCategory } from './smellCategories';

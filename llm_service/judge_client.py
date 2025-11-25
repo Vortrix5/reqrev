@@ -9,6 +9,8 @@ import re
 from typing import Any, Dict, List, Optional
 from openai import AsyncOpenAI
 
+from llm_service.smell_taxonomy import FLAT_SMELL_LABELS, TAXONOMY_TEXT
+
 
 logger = logging.getLogger(__name__)
 
@@ -21,26 +23,20 @@ class JudgeClient:
     the quality of smell detection performed by the primary model.
     """
     
-    JUDGE_SYSTEM_PROMPT = """You are an expert evaluator in software requirements engineering and ISO/IEC 29148 standards.
+    JUDGE_SYSTEM_PROMPT = f"""You are an expert evaluator in software requirements engineering and ISO/IEC 29148 standards.
 
 Your task is to evaluate the quality of requirement smell detection performed by another AI model.
 
-**REQUIREMENT SMELL TAXONOMY (5 Categories, 36 Labels):**
+You receive:
+- the requirement text,
+- the smells predicted by the primary model (list of IDs),
+- and (optionally) ground-truth smell IDs for evaluation.
 
-**1. MORPHOLOGICAL SMELLS (shape & readability):**
-- too_long_sentence, too_short_sentence, unreadable_structure, punctuation_issue, acronym_overuse_or_abbrev
+Use the smell taxonomy below as the single source of truth.
+Only the listed smell IDs are valid. The primary model must use only labels from this taxonomy.
+When suggesting corrections, always refer to these IDs (e.g., "add `non_atomic_requirement`", "remove `subjective_language`").
 
-**2. LEXICAL SMELLS (word choice):**
-- non_atomic_requirement, negative_formulation, vague_pronoun_or_reference, subjective_language, vague_or_implicit_terms, non_verifiable_qualifier, loophole_or_open_ended, superlative_or_comparative_without_reference, quantifier_without_unit_or_range, design_or_implementation_detail, implicit_requirement
-
-**3. ANALYTICAL SMELLS (grammar & structure):**
-- overuse_imperative_form, missing_imperative_verb, conditional_or_non_assertive_requirement, passive_voice, domain_term_imbalance
-
-**4. RELATIONAL SMELLS (dependencies):**
-- too_many_dependencies_or_versions, excessive_or_insufficient_coupling, deep_nesting_or_structure_issue
-
-**5. INCOMPLETENESS & LANGUAGE SMELLS:**
-- incomplete_requirement, incomplete_reference_or_condition, missing_system_response, incorrect_or_confusing_order, missing_unit_of_measurement, partial_content_or_incomplete_enumeration, embedded_rationale_or_justification, undefined_term, language_error_or_grammar_issue, ambiguous_plurality
+{TAXONOMY_TEXT}
 
 **EVALUATION CRITERIA:**
 

@@ -9,6 +9,7 @@ from typing import Optional
 from openai import AsyncOpenAI
 
 from llm_service.models.requirement_smell_result import RequirementSmellResult
+from llm_service.smell_taxonomy import FLAT_SMELL_LABELS, TAXONOMY_TEXT
 
 
 logger = logging.getLogger(__name__)
@@ -27,53 +28,15 @@ class OpenAIClient:
     5. Incompleteness & language issues
     """
     
-    SYSTEM_PROMPT = """You are an expert in software requirements engineering and ISO/IEC 29148 standards.
+    SYSTEM_PROMPT = f"""You are an expert in software requirements engineering and ISO/IEC 29148 standards.
 
-Your task is to analyze software requirements and detect quality issues (smells) organized into 5 categories:
+Your task is to analyze software requirements and detect quality issues (smells) using the fixed taxonomy below.
 
-**1. MORPHOLOGICAL SMELLS (shape & readability):**
-- too_long_sentence: One requirement spans many clauses (>30-40 tokens), multiple "and/or" chains
-- too_short_sentence: Very short fragment missing context
-- unreadable_structure: Complex syntax, heavy nesting, confusing punctuation
-- punctuation_issue: Excessive or missing punctuation
-- acronym_overuse_or_abbrev: Heavy acronyms without introduction
+You must detect requirement smells using only the smell IDs listed in this taxonomy.
+Use only these smell IDs in your output; do not invent new labels.
+For each smell that clearly applies, include its ID in the result and briefly justify it.
 
-**2. LEXICAL SMELLS (word choice):**
-- non_atomic_requirement: Multiple actions/concerns combined with "and/or", should be split
-- negative_formulation: Uses "must not", "shall not" where positive would be clearer
-- vague_pronoun_or_reference: Uses "it", "this", "that" without clear referent
-- subjective_language: "user-friendly", "simple", "fast", "easy" without measurable criteria
-- vague_or_implicit_terms: "normally", "usually", "as appropriate", "if possible", "etc.", OR vague nouns lacking specificity like "functionality", "capability", "feature", "information", "data", "system", "process" used without concrete details about what/how/when
-- non_verifiable_qualifier: Vague performance terms WITHOUT any metrics: "as soon as possible", "minimal delay", "high performance", "quickly", "efficiently". DO NOT flag if specific numeric metrics are provided (e.g., "500 milliseconds", "2 seconds" are verifiable even if context could be better)
-- loophole_or_open_ended: "at least", "up to", "including but not limited to", "minimum of", "no less than" with no upper/lower bounds or clear limits. Example: "at least 1000 TPS" (no upper limit defined) → FLAG
-- superlative_or_comparative_without_reference: "best", "most", "better", "faster" with no baseline
-- quantifier_without_unit_or_range: "many", "few", "several", numbers without units, OR overly broad/vague quantifiers like "all", "any", "every" without explicit scope boundaries (e.g., "all user data" - which data types? "all users" - which user categories?)
-- design_or_implementation_detail: Specifies HOW instead of WHAT. Flag if requirement mentions: specific technologies ("OAuth 2.0", "MySQL"), specific algorithms ("AES-256", "SHA-256"), implementation mechanisms ("database", "cache", "queue"), or technical architecture details. Requirements should state the capability/behavior needed, not the solution approach.
-- implicit_requirement: Significant behavior only implied, not explicitly stated
-
-**3. ANALYTICAL SMELLS (grammar & structure):**
-- overuse_imperative_form: Long list of commands without clear conditions/actors
-- missing_imperative_verb: No clear action verb, just descriptive statement
-- conditional_or_non_assertive_requirement: Uses weak modals ("may", "might", "could", "should", "maybe", "possibly") OR excessive "if...then" nesting that obscures the core obligation. NOTE: Simple conditional requirements with clear "shall" obligations are acceptable (e.g., "When X happens, the system shall do Y"). Only flag when obligation itself is weakened or unclear.
-- passive_voice: Unclear who performs action ("data must be logged")
-- domain_term_imbalance: Too much jargon without explanation, or missing expected domain terms
-
-**4. RELATIONAL SMELLS (dependencies):**
-- too_many_dependencies_or_versions: References many requirements ("see R1, R2, R3, R10")
-- excessive_or_insufficient_coupling: Overly entangled or floating with no relations
-- deep_nesting_or_structure_issue: Deeply nested hierarchy affecting understanding
-
-**5. INCOMPLETENESS & LANGUAGE SMELLS:**
-- incomplete_requirement: Missing essential details like WHAT specifically (e.g., "provide backup functionality" - backup what? when? how often?), WHO (actor), WHEN (trigger/conditions), or WHERE (scope/boundary). If a requirement is too vague to implement without making major assumptions, it's incomplete.
-- incomplete_reference_or_condition: References undefined things or incomplete conditions
-- missing_system_response: States condition but not what system should do
-- incorrect_or_confusing_order: Steps in confusing order
-- missing_unit_of_measurement: Numeric values without units
-- partial_content_or_incomplete_enumeration: Uses "etc." or incomplete lists
-- embedded_rationale_or_justification: Mixes "why" into "what"
-- undefined_term: Specialized terms not defined, ambiguous in context
-- language_error_or_grammar_issue: Grammar/spelling errors affecting clarity
-- ambiguous_plurality: Unclear if applies to all, some, or one instance
+{TAXONOMY_TEXT}
 
 **DETECTION GUIDELINES:**
 
@@ -258,36 +221,8 @@ Analyze the requirement and return a JSON object with:
         # Convert to lowercase and replace spaces/hyphens with underscores
         normalized = smell.lower().strip().replace(" ", "_").replace("-", "_")
         
-        # Valid smell labels from our taxonomy
-        valid_smells = {
-            # Morphological
-            "too_long_sentence", "too_short_sentence", "too_long_paragraph", 
-            "too_short_paragraph", "unreadable_structure", "punctuation_issue",
-            "acronym_overuse_or_abbrev",
-            
-            # Lexical
-            "non_atomic_requirement", "negative_formulation", "vague_pronoun_or_reference",
-            "subjective_language", "vague_or_implicit_terms", "non_verifiable_qualifier",
-            "loophole_or_open_ended", "superlative_or_comparative_without_reference",
-            "quantifier_without_unit_or_range", "design_or_implementation_detail",
-            "implicit_requirement",
-            
-            # Analytical
-            "overuse_imperative_form", "missing_imperative_verb",
-            "conditional_or_non_assertive_requirement", "passive_voice",
-            "domain_term_imbalance",
-            
-            # Relational
-            "too_many_dependencies_or_versions", "excessive_or_insufficient_coupling",
-            "deep_nesting_or_structure_issue",
-            
-            # Incompleteness & Language
-            "incomplete_requirement", "incomplete_reference_or_condition",
-            "missing_system_response", "incorrect_or_confusing_order",
-            "missing_unit_of_measurement", "partial_content_or_incomplete_enumeration",
-            "embedded_rationale_or_justification", "undefined_term",
-            "language_error_or_grammar_issue", "ambiguous_plurality",
-        }
+        # Valid smell labels from our taxonomy (imported from smell_taxonomy.py)
+        valid_smells = set(FLAT_SMELL_LABELS)
         
         # Map common variations to standard labels
         smell_map = {

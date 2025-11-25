@@ -71,7 +71,9 @@ Content-Type: application/json
 | `explanation` | string \| null | Human-readable explanation of detected issues |
 | `raw_model_output` | object \| null | Raw output from the LLM (for debugging) |
 
-**Smell Types (36 Labels Across 5 Categories)**:
+**Smell Types (30 Labels Across 5 Categories)**:
+
+For complete definitions, see [TAXONOMY.md](../TAXONOMY.md).
 
 **Morphological (5)**: Shape and readability
 
@@ -109,7 +111,7 @@ Content-Type: application/json
 - `excessive_or_insufficient_coupling` - Overly entangled or floating with no relations
 - `deep_nesting_or_structure_issue` - Deeply nested hierarchy
 
-**Incompleteness (12)**: Missing information and errors
+**Incompleteness & Language (10)**: Missing information and errors
 
 - `incomplete_requirement` - Missing trigger, actor, response, or success criteria
 - `incomplete_reference_or_condition` - References undefined things or incomplete conditions
